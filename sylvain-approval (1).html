@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Access Signs — Expedited Approval</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#F0F2F5;font-family:'Syne',sans-serif;min-height:100vh;padding:20px;-webkit-font-smoothing:antialiased;color:#1A1D24;}
+
+.card{background:#fff;border:1px solid #D8DBE2;box-shadow:0 4px 24px rgba(0,0,0,0.08);max-width:500px;width:100%;margin:0 auto;overflow:hidden;}
+
+.card-top{background:#1A1D24;padding:20px 22px;display:flex;align-items:center;gap:12px;}
+.logo-mark{width:36px;height:36px;background:#E85A1A;clip-path:polygon(0 0,100% 0,100% 68%,68% 100%,0 100%);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.logo-name{font-size:14px;font-weight:700;color:#fff;}
+.logo-tag{font-family:'DM Mono',monospace;font-size:9px;color:#6B7280;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;}
+
+.card-body{padding:22px;}
+
+/* Project summary */
+.proj-box{background:#F7F8FA;border:1px solid #D8DBE2;border-left:3px solid #E85A1A;padding:14px 16px;margin-bottom:16px;}
+.proj-from{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.09em;color:#6B7280;font-weight:700;margin-bottom:6px;}
+.proj-name{font-size:17px;font-weight:800;color:#1A1D24;margin-bottom:4px;}
+.proj-meta{font-family:'DM Mono',monospace;font-size:10px;color:#6B7280;line-height:1.7;}
+.proj-meta b{color:#1A1D24;}
+
+/* Verdict strip */
+.verdict-strip{display:flex;align-items:center;gap:12px;padding:10px 14px;margin-bottom:16px;border:1px solid;}
+.verdict-strip.ok{background:#E8F7EF;border-color:#A8D5B8;}
+.verdict-strip.warn{background:#FFF8E0;border-color:#E8D080;}
+.verdict-strip.fail{background:#FDF2F0;border-color:#F0A89A;}
+.vs-icon{font-size:18px;flex-shrink:0;}
+.vs-text{font-size:12px;font-weight:700;}
+.vs-text.ok{color:#1A5C3A;}
+.vs-text.warn{color:#6B4A00;}
+.vs-text.fail{color:#8B1A10;}
+.vs-sub{font-size:11px;color:#6B7280;margin-top:1px;}
+
+/* Phase timeline */
+.section-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.09em;color:#6B7280;font-weight:700;margin-bottom:8px;}
+.phase-table{width:100%;border-collapse:collapse;margin-bottom:16px;border:1px solid #D8DBE2;}
+.phase-table thead th{background:#F7F8FA;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;padding:7px 9px;text-align:left;border-bottom:2px solid #D8DBE2;font-weight:700;}
+.phase-table tbody tr{border-bottom:1px solid #EDEEF1;}
+.phase-table tbody tr:last-child{border-bottom:none;}
+.phase-table tbody tr.fab-row{background:#F4F0FF;}
+.phase-table td{padding:7px 9px;font-size:11px;vertical-align:middle;}
+.ph-dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:middle;flex-shrink:0;}
+.ph-name{font-weight:600;color:#1A1D24;}
+.ph-fab-badge{font-family:'DM Mono',monospace;font-size:9px;color:#6B4FBF;background:#F4F0FF;border:1px solid #C4B0F0;padding:1px 6px;margin-left:5px;font-weight:700;}
+.ph-date{font-family:'DM Mono',monospace;font-size:10px;color:#6B7280;}
+.ph-days{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;text-align:right;}
+
+/* Reference numbers */
+.ref-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.ref-cell{background:#F7F8FA;border:1px solid #D8DBE2;padding:10px 12px;text-align:center;}
+.ref-num{font-family:'DM Mono',monospace;font-size:20px;font-weight:700;color:#1A1D24;line-height:1;}
+.ref-num.orange{color:#E85A1A;}
+.ref-num.purple{color:#6B4FBF;}
+.ref-lbl{font-family:'DM Mono',monospace;font-size:9px;color:#6B7280;text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;}
+
+/* Sep */
+.sep{font-family:'DM Mono',monospace;font-size:10px;color:#E85A1A;text-transform:uppercase;letter-spacing:0.1em;padding:8px 0;margin-bottom:14px;border-bottom:2px solid rgba(232,90,26,0.12);display:flex;align-items:center;gap:7px;font-weight:700;}
+.sep::before{content:'';width:3px;height:12px;background:#E85A1A;display:block;}
+
+/* Form fields */
+.flabel{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#374151;margin-bottom:6px;display:block;font-weight:600;}
+.finput{width:100%;background:#fff;border:1px solid #C8CBD4;color:#1A1D24;font-family:'Syne',sans-serif;font-size:13px;padding:10px 12px;outline:none;transition:border-color 0.15s,box-shadow 0.15s;appearance:none;margin-bottom:12px;}
+.finput:focus{border-color:#E85A1A;box-shadow:0 0 0 3px rgba(232,90,26,0.1);}
+.finput.code{font-family:'DM Mono',monospace;font-size:22px;font-weight:700;letter-spacing:0.15em;text-align:center;color:#1A1D24;}
+.finput.purple{color:#6B4FBF;font-size:22px;font-weight:700;font-family:'DM Mono',monospace;border-color:#C4B0F0;text-align:center;}
+.hint{font-family:'DM Mono',monospace;font-size:10px;color:#6B7280;line-height:1.6;margin-bottom:12px;}
+
+/* Live reference update */
+.commit-ref{display:none;background:#F4F0FF;border:1px solid #C4B0F0;border-left:3px solid #6B4FBF;padding:9px 12px;margin-bottom:12px;font-size:11px;color:#3D2B80;line-height:1.5;}
+.commit-ref b{color:#6B4FBF;}
+
+/* Today code */
+.today-code-box{background:#FFF0E8;border:2px solid #E85A1A;padding:14px 16px;text-align:center;margin-bottom:14px;}
+.today-lbl{font-family:'DM Mono',monospace;font-size:9px;color:#B8521A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;font-weight:700;}
+.today-code{font-family:'DM Mono',monospace;font-size:36px;font-weight:500;color:#1A1D24;letter-spacing:0.18em;user-select:all;}
+.today-expiry{font-family:'DM Mono',monospace;font-size:10px;color:#B8860B;margin-top:8px;}
+
+/* Feedback */
+.feedback{display:none;padding:9px 12px;font-size:11px;line-height:1.5;margin-bottom:12px;}
+.feedback.ok{background:#E8F7EF;color:#1A5C3A;border:1px solid #A8D5B8;}
+.feedback.err{background:#FDF2F0;color:#8B1A10;border:1px solid #F0A89A;}
+
+/* Submit */
+.btn-submit{width:100%;background:#E85A1A;border:none;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:13px;cursor:pointer;transition:background 0.15s;box-shadow:0 2px 8px rgba(232,90,26,0.3);}
+.btn-submit:hover{background:#C84A14;}
+.btn-submit:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none;}
+
+/* Return code */
+.return-box{display:none;margin-top:16px;padding:18px;background:#F4F0FF;border:2px solid #6B4FBF;text-align:center;}
+.return-title{font-size:12px;font-weight:700;color:#3D2B80;margin-bottom:4px;text-align:left;}
+.return-sub-top{font-size:11px;color:#374151;margin-bottom:12px;text-align:left;line-height:1.5;}
+.return-code-big{font-family:'DM Mono',monospace;font-size:52px;font-weight:700;color:#6B4FBF;letter-spacing:0.14em;line-height:1;margin:4px 0 8px;user-select:all;cursor:text;}
+.return-commit{font-family:'DM Mono',monospace;font-size:11px;color:#6B4FBF;margin-bottom:14px;}
+.return-instructions{font-size:11px;color:#374151;line-height:1.55;background:#fff;padding:10px 12px;border:1px solid #C4B0F0;text-align:left;margin-bottom:12px;}
+.return-instructions b{color:#3D2B80;}
+.btn-copy-return{width:100%;background:#6B4FBF;border:none;color:#fff;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:11px;cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.15s;}
+.btn-copy-return:hover{background:#5340A0;}
+.btn-copy-return.copied{background:#1A9C5B;}
+
+/* Warning footer */
+.warning{margin-top:14px;padding:10px 13px;background:#FDF2F0;border:1px solid #F0A89A;border-left:3px solid #C0392B;font-size:11px;color:#5C1A10;line-height:1.55;}
+.warning b{color:#8B1A10;}
+
+/* No request */
+.no-request{padding:40px 24px;text-align:center;}
+.no-request h2{font-size:16px;font-weight:700;margin-bottom:8px;color:#1A1D24;}
+.no-request p{font-size:12px;color:#6B7280;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-top">
+    <div class="logo-mark">AS</div>
+    <div>
+      <div class="logo-name">Access Signs</div>
+      <div class="logo-tag">Expedited Production — Director Approval</div>
+    </div>
+  </div>
+  <div class="card-body" id="mainBody">
+    <div class="no-request" id="noRequest" style="display:none;">
+      <h2>No approval request found</h2>
+      <p>This page is opened via a pre-filled link sent by a sales rep.<br>If you received a link, please open it directly from the Teams message or email.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── MUST MATCH index.html ──────────────────────────────────────
+const APPROVAL_SECRET = 'AS-OPS-SC-2026';
+const CHARS = 'ACEFGHJKLMNPQRTUVWXY3479';
+
+async function deriveCode(secret, dateStr) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(secret), {name:'HMAC',hash:'SHA-256'}, false, ['sign']);
+  const sig  = await crypto.subtle.sign('HMAC', key, enc.encode(dateStr));
+  const bytes = new Uint8Array(sig);
+  let hex = Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+  let code = '';
+  for (let i = 0; i < 6; i++) { code += CHARS[parseInt(hex.slice(i*2,i*2+2),16) % CHARS.length]; }
+  return code;
+}
+
+async function deriveReturnCode(secret, dateStr, fabDays) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(secret), {name:'HMAC',hash:'SHA-256'}, false, ['sign']);
+  const sig  = await crypto.subtle.sign('HMAC', key, enc.encode(dateStr + ':' + fabDays));
+  const bytes = new Uint8Array(sig);
+  let code = '';
+  for (let i = 0; i < 6; i++) { code += (bytes[i] % 10).toString(); }
+  return code;
+}
+
+function todayStr() { return new Date().toLocaleDateString('en-CA'); }
+
+function fmtDate(s) {
+  if (!s) return '—';
+  const d = new Date(s + 'T12:00:00');
+  return d.toLocaleDateString('en-CA', {weekday:'short', month:'short', day:'numeric'});
+}
+
+// ── PARSE PARAMS & RENDER ──────────────────────────────────────
+const P = new URLSearchParams(window.location.search);
+const hasRequest = P.has('project') && P.get('project') !== '';
+
+let todayCode = '';
+let currentReturnCode = '';
+
+async function init() {
+  if (!hasRequest) {
+    document.getElementById('noRequest').style.display = 'block';
+    return;
+  }
+
+  // Project params
+  const project  = P.get('project')  || 'Unknown Project';
+  const client   = P.get('client')   || '';
+  const quote    = P.get('quote')    || '';
+  const rep      = P.get('rep')      || 'Sales Rep';
+  const city     = P.get('city')     || '—';
+  const scaleVal = P.get('scale')    || 'standard';
+  const startD   = P.get('start')    || '';
+  const targetD  = P.get('target')   || '';
+  const stdFab   = parseInt(P.get('stdFab')) || (scaleVal==='large' ? 50 : 30);
+  const expFab   = parseInt(P.get('expFab')) || (scaleVal==='large' ? 30 : 18);
+  const onTime   = P.get('onTime') === '1';
+  const buffer   = parseInt(P.get('buffer')) || 0;
+  const projEnd  = P.get('projEnd') || '';
+
+  // Phase data — compact pipe/tilde-delimited format (name|start|end|days|isFab|color)
+  let phases = [];
+  const phRaw = P.get('ph');
+  if (phRaw) {
+    try {
+      phases = phRaw.split('~').map(row => {
+        const [name, start, end, days, isFab, color] = row.split('|');
+        return { name, start, end, days: parseInt(days)||0, isFab: isFab==='1', color: color||'#888' };
+      }).filter(p => p.name);
+    } catch(e) { phases = []; }
+  }
+
+  // Derive today's code
+  todayCode = await deriveCode(APPROVAL_SECRET, todayStr());
+
+  // Verdict
+  const verdictClass = onTime ? 'ok' : Math.abs(buffer) <= 5 ? 'warn' : 'fail';
+  const verdictIcon  = onTime ? '✓' : '⚠';
+  const verdictText  = onTime
+    ? `Timeline feasible — ${buffer}d buffer`
+    : `Timeline misses target by ${Math.abs(buffer)} business days`;
+  const verdictSub   = onTime
+    ? `Projected completion: ${fmtDate(projEnd)} · Target: ${fmtDate(targetD)}`
+    : `Projected: ${fmtDate(projEnd)} · Target: ${fmtDate(targetD)} — expedited production needed`;
+
+  // Phase table rows
+  const phaseRows = phases.map(p => `
+    <tr class="${p.isFab ? 'fab-row' : ''}">
+      <td>
+        <span class="ph-dot" style="background:${p.color}"></span>
+        <span class="ph-name">${p.name}</span>
+        ${p.isFab ? '<span class="ph-fab-badge">★ You Set This</span>' : ''}
+      </td>
+      <td><span class="ph-date">${p.isFab ? '—' : p.start}</span></td>
+      <td><span class="ph-date">${p.isFab ? '—' : p.end}</span></td>
+      <td><span class="ph-days" style="color:${p.isFab ? '#6B4FBF' : p.color}">${p.isFab ? '?' : p.days + 'd'}</span></td>
+    </tr>`).join('');
+
+  const phaseSection = phases.length > 0 ? `
+    <div class="section-label">Full Calculated Timeline</div>
+    <table class="phase-table">
+      <thead><tr><th>Phase</th><th>Start</th><th>End</th><th style="text-align:right">Days</th></tr></thead>
+      <tbody>${phaseRows}</tbody>
+    </table>` : '';
+
+  document.getElementById('mainBody').innerHTML = `
+
+    <!-- Project info -->
+    <div class="proj-box">
+      <div class="proj-from">Approval request from ${rep}</div>
+      <div class="proj-name">${project}</div>
+      <div class="proj-meta">
+        ${client ? '<b>Client:</b> ' + client + '&nbsp;·&nbsp;' : ''}
+        ${quote  ? '<b>Quote:</b> '  + quote  + '&nbsp;·&nbsp;' : ''}
+        <b>City:</b> ${city}<br>
+        <b>Scale:</b> ${scaleVal === 'large' ? 'Large Scale' : 'Standard'}&nbsp;·&nbsp;
+        <b>Start:</b> ${fmtDate(startD)}&nbsp;·&nbsp;
+        <b>Target:</b> ${fmtDate(targetD)}
+      </div>
+    </div>
+
+    <!-- Verdict -->
+    <div class="verdict-strip ${verdictClass}">
+      <span class="vs-icon">${verdictIcon}</span>
+      <div>
+        <div class="vs-text ${verdictClass}">${verdictText}</div>
+        <div class="vs-sub">${verdictSub}</div>
+      </div>
+    </div>
+
+    <!-- Phase timeline (real data) -->
+    ${phaseSection}
+
+    <!-- Reference numbers -->
+    <div class="ref-grid">
+      <div class="ref-cell">
+        <div class="ref-num">${stdFab}d</div>
+        <div class="ref-lbl">Standard Fab</div>
+      </div>
+      <div class="ref-cell">
+        <div class="ref-num orange">${expFab}d</div>
+        <div class="ref-lbl">Default Exp.</div>
+      </div>
+      <div class="ref-cell">
+        <div class="ref-num purple" id="committedDisplay">—</div>
+        <div class="ref-lbl">Your Commit</div>
+      </div>
+    </div>
+
+    <div class="sep">Your Approval</div>
+
+    <!-- Fab days input -->
+    <label class="flabel">Committed Fabrication Days <span style="color:#6B4FBF;font-weight:700;">★ You Set This</span></label>
+    <input type="number" class="finput purple" id="fabDaysInput"
+      min="1" max="60" placeholder="${expFab}"
+      oninput="onFabInput()" autocomplete="off">
+    <div class="hint">Standard is ${stdFab}bd · Default expedited is ${expFab}bd · Enter the days you can realistically commit to for this project and client.</div>
+
+    <!-- Live commit reference -->
+    <div class="commit-ref" id="commitRef">
+      You are committing to <b id="commitDaysLabel">—</b> fabrication days for <b>${project}</b>.
+      ${buffer < 0 ? `The timeline misses by <b>${Math.abs(buffer)}d</b> even with default expedited — your custom days will be binding.` : `With default expedited there is a <b>${buffer}d buffer</b>.`}
+    </div>
+
+    <!-- Today's approval code -->
+    <div class="today-code-box">
+      <div class="today-lbl">Today's Approval Code · ${todayStr()}</div>
+      <div class="today-code" id="todayCodeDisplay">${todayCode}</div>
+      <div class="today-expiry">Expires at midnight · Do not share this page</div>
+    </div>
+
+    <!-- Code confirmation entry -->
+    <label class="flabel">Enter Today's Code to Confirm</label>
+    <input type="text" class="finput code" id="codeInput"
+      placeholder="XXXXXX" maxlength="6"
+      autocomplete="off" oninput="onCodeInput()">
+    <div class="hint">Type the 6-character code shown above. This confirms you are on your personal device and authorises your committed days.</div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button class="btn-submit" id="btnSubmit" onclick="submitApproval()" disabled>
+      Generate Return Code for ${rep} →
+    </button>
+
+    <!-- Return code result -->
+    <div class="return-box" id="returnBox">
+      <div class="return-title">✓ Return Code Generated</div>
+      <div class="return-sub-top">Read this 6-digit code to <b>${rep}</b>:</div>
+      <div class="return-code-big" id="returnCodeDisplay">——</div>
+      <div class="return-commit" id="returnCommitLabel"></div>
+      <div class="return-instructions">
+        <b>What to tell ${rep}:</b><br>
+        "Your return code is [read the numbers above]. I'm committing to [your fab days] fabrication days for this project."<br><br>
+        They enter the return code AND the fab days into the app to activate expedited production. Both must match — the code encodes today's date and your exact day count.
+      </div>
+      <button class="btn-copy-return" id="btnCopyReturn" onclick="copyReturnCode()">Copy Return Code</button>
+    </div>
+
+    <div class="warning">
+      <b>Do not share this page or forward this link.</b> It contains project details and generates cryptographic approval codes. Only open on your personal device.
+    </div>
+  `;
+}
+
+function onFabInput() {
+  const days = parseInt(document.getElementById('fabDaysInput')?.value) || 0;
+  const disp = document.getElementById('committedDisplay');
+  const ref  = document.getElementById('commitRef');
+  const lbl  = document.getElementById('commitDaysLabel');
+  if (disp) disp.textContent = days > 0 ? days + 'd' : '—';
+  if (ref)  ref.style.display = days > 0 ? 'block' : 'none';
+  if (lbl)  lbl.textContent  = days + ' business';
+  validateForm();
+}
+
+function onCodeInput() {
+  const inp = document.getElementById('codeInput');
+  if (inp) inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  validateForm();
+}
+
+function validateForm() {
+  const codeEl = document.getElementById('codeInput');
+  const fabEl  = document.getElementById('fabDaysInput');
+  const btn    = document.getElementById('btnSubmit');
+  const fb     = document.getElementById('feedback');
+  if (!codeEl || !fabEl || !btn) return;
+
+  const entered = codeEl.value.trim().toUpperCase();
+  const fabDays = parseInt(fabEl.value) || 0;
+
+  if (entered.length === 6 && fabDays >= 1) {
+    if (entered === todayCode) {
+      fb.className = 'feedback ok';
+      fb.textContent = '✓ Code verified — ' + fabDays + ' fabrication days committed. Click the button below to generate your return code.';
+      fb.style.display = 'block';
+      btn.disabled = false;
+    } else {
+      fb.className = 'feedback err';
+      fb.textContent = '✗ Code does not match. Re-check the code shown above and try again.';
+      fb.style.display = 'block';
+      btn.disabled = true;
+    }
+  } else {
+    fb.style.display = 'none';
+    btn.disabled = true;
+  }
+}
+
+async function submitApproval() {
+  const entered  = (document.getElementById('codeInput')?.value || '').trim().toUpperCase();
+  const fabDays  = parseInt(document.getElementById('fabDaysInput')?.value) || 0;
+
+  if (entered !== todayCode || fabDays < 1) {
+    alert('Validation failed. Please check the code and committed days.');
+    return;
+  }
+
+  // Generate return code
+  currentReturnCode = await deriveReturnCode(APPROVAL_SECRET, todayStr(), fabDays);
+
+  const box = document.getElementById('returnBox');
+  document.getElementById('returnCodeDisplay').textContent = currentReturnCode;
+  document.getElementById('returnCommitLabel').textContent = fabDays + ' fabrication days committed · ' + todayStr();
+  box.style.display = 'block';
+  document.getElementById('btnSubmit').style.display = 'none';
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+async function copyReturnCode() {
+  const btn = document.getElementById('btnCopyReturn');
+  const fabDays = parseInt(document.getElementById('fabDaysInput')?.value) || 0;
+  const text = currentReturnCode + ' (' + fabDays + ' fab days)';
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Return Code'; btn.classList.remove('copied'); }, 2500);
+  } catch(e) {
+    prompt('Copy this and send to ' + (P.get('rep') || 'sales rep') + ':', text);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access Signs — Project Timeline Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── Surfaces ── */
+  --bg:#F0F2F5;
+  --s1:#FFFFFF;
+  --s2:#F7F8FA;
+  --s3:#EDEEF1;
+  --border:#D8DBE2;
+  --border2:#C8CBD4;
+
+  /* ── Brand ── */
+  --orange:#E85A1A;
+  --orange2:rgba(232,90,26,0.12);
+  --orange3:rgba(232,90,26,0.06);
+
+  /* ── Semantic ── */
+  --green:#1A9C5B;
+  --green2:rgba(26,156,91,0.10);
+  --yellow:#B8860B;
+  --yellow2:rgba(184,134,11,0.10);
+  --red:#C0392B;
+  --red2:rgba(192,57,43,0.10);
+  --purple:#6B4FBF;
+  --purple2:rgba(107,79,191,0.10);
+  --blue:#1A6BBF;
+  --blue2:rgba(26,107,191,0.10);
+
+  /* ── Text ── */
+  --text:#1A1D24;
+  --muted:#6B7280;
+  --dim:#374151;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+/* ── HEADER ── */
+header{background:var(--s1);border-bottom:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:18px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-mark{width:34px;height:34px;background:var(--orange);clip-path:polygon(0 0,100% 0,100% 68%,68% 100%,0 100%);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.logo-name{font-size:14px;font-weight:700;letter-spacing:0.03em;color:var(--text);}
+.logo-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.chip{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.06em;padding:5px 11px;border:1px solid;}
+.chip-orange{color:#B03A0A;border-color:rgba(180,60,10,0.35);background:#FFF0E8;}
+.chip-green{color:#1A5C3A;border-color:rgba(26,92,58,0.35);background:#E8F7EF;}
+.chip-yellow{color:#6B4A00;border-color:rgba(107,74,0,0.35);background:#FFF8E0;}
+.chip-red{color:#8B1A10;border-color:rgba(139,26,16,0.35);background:#FDF2F0;}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1340px;margin:0 auto;padding:32px 36px;}
+.main-grid{display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start;}
+
+/* ── CONFIG BANNER ── */
+.config-banner{background:#EEF4FF;border:1px solid #BCCFEE;border-left:3px solid var(--blue);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.config-banner.ok{background:#EEF8F3;border-color:#A8D5B8;border-left-color:var(--green);}
+.config-banner.warn{background:#FFFBEB;border-color:#E8D080;border-left-color:var(--yellow);}
+.config-banner-text{font-size:12px;color:var(--dim);line-height:1.5;flex:1;}
+.config-banner-text strong{color:var(--blue);}
+.config-banner.ok .config-banner-text strong{color:var(--green);}
+.config-banner.warn .config-banner-text strong{color:var(--yellow);}
+
+/* ── CARD ── */
+.card{background:var(--s1);border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.card-head{padding:14px 18px;border-bottom:2px solid var(--border);background:var(--s2);display:flex;align-items:center;gap:9px;}
+.card-head h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--text);}
+.pip{width:5px;height:5px;background:var(--orange);flex-shrink:0;}
+.card-body{padding:20px;}
+
+/* ── FORM ── */
+.fgroup{margin-bottom:18px;}
+.flabel{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);margin-bottom:7px;display:block;font-weight:600;}
+.finput,.fselect,.ftextarea{width:100%;background:var(--s1);border:1px solid var(--border2);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.15s,box-shadow 0.15s;appearance:none;}
+.finput:focus,.fselect:focus,.ftextarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,90,26,0.1);}
+.finput::placeholder,.ftextarea::placeholder{color:#A0A8B4;}
+.fselect{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B7280'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer;}
+.finput[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0) opacity(0.5);cursor:pointer;}
+.ftextarea{resize:vertical;min-height:72px;font-size:12px;line-height:1.6;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.sep{font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;padding:10px 0;margin-bottom:16px;margin-top:8px;border-bottom:2px solid var(--orange2);display:flex;align-items:center;gap:8px;font-weight:700;}
+.sep::before{content:'';width:3px;height:13px;background:var(--orange);display:block;}
+
+/* ── TOGGLES ── */
+.toggle2{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border2);}
+.toggle3{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--border2);}
+.toggle4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border:1px solid var(--border2);}
+.tbtn{background:var(--s2);border:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:11px;font-weight:600;padding:9px 6px;cursor:pointer;transition:all 0.15s;text-align:center;line-height:1.3;}
+.tbtn:hover{background:var(--s3);color:var(--text);}
+.tbtn:not(:last-child){border-right:1px solid var(--border2);}
+.tbtn.active{background:var(--orange);color:#fff;}
+.tbtn.active.green-act{background:var(--green);color:#fff;}
+
+/* ── EXPEDITED ── */
+.exp-row{display:flex;align-items:center;justify-content:space-between;background:var(--s2);border:1px solid var(--border2);padding:11px 14px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+.exp-row:hover{border-color:var(--purple);background:#F8F5FF;}
+.exp-row.active{border-color:var(--purple);background:#F4F0FF;}
+.exp-row.pending{border-color:var(--yellow);background:#FFFBEB;}
+.exp-row.approved{border-color:var(--green);background:#E8F7EF;cursor:default;}
+.exp-label{font-size:12px;font-weight:600;color:var(--dim);}
+.exp-sublabel{font-size:10px;color:var(--muted);margin-top:2px;}
+.exp-row.active .exp-label{color:var(--purple);}
+.exp-row.pending .exp-label{color:#6B4A00;}
+.exp-row.approved .exp-label{color:var(--green);}
+.exp-tag{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid var(--purple);color:var(--purple);letter-spacing:0.05em;text-transform:uppercase;font-weight:700;background:#F4F0FF;}
+.exp-tag.pending{border-color:var(--yellow);color:#6B4A00;background:#FFF8E0;}
+.exp-tag.approved{border-color:var(--green);color:var(--green);background:#E8F7EF;}
+.exp-toggle{width:34px;height:19px;background:var(--border);border:1px solid var(--border2);position:relative;pointer-events:none;border-radius:10px;}
+.exp-toggle::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;background:#fff;transition:left 0.2s;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.exp-toggle.pending{background:var(--yellow);border-color:var(--yellow);}
+.exp-toggle.pending::after{left:9px;}
+.exp-toggle.on{background:var(--green);border-color:var(--green);}
+.exp-toggle.on::after{left:17px;}
+#btnConfirmApproval:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* ── PHASE TABLE ── */
+.ptable{width:100%;border-collapse:collapse;border:1px solid var(--border);}
+.ptable th{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:0.07em;padding:8px 10px;text-align:left;border-bottom:2px solid var(--border);background:var(--s2);font-weight:700;}
+.ptable td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.ptable tr:last-child td{border-bottom:none;}
+.ptable tr:hover td{background:var(--s2);}
+.pname{font-size:12px;color:var(--text);font-weight:500;}
+.pname small{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);display:block;margin-top:2px;}
+.pdays{font-family:'DM Mono',monospace;font-size:12px;background:var(--s1);border:1px solid var(--border2);color:var(--text);width:56px;padding:5px 6px;text-align:center;outline:none;transition:border-color 0.15s;display:block;margin:0 auto;}
+.pdays:focus{border-color:var(--orange);}
+.pdays[readonly]{opacity:0.5;cursor:not-allowed;background:var(--s3);}
+.pdays.exp-days{border-color:var(--purple);color:var(--purple);}
+
+.btn-calc{width:100%;background:var(--orange);border:none;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:14px;cursor:pointer;margin-top:12px;transition:background 0.15s,transform 0.1s;box-shadow:0 2px 8px rgba(232,90,26,0.3);}
+.btn-calc:hover{background:#C84A14;}
+.btn-calc:active{transform:scale(0.99);}
+.hint{margin-top:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1.7;}
+
+/* ── LOADING SPINNER ── */
+.loading-city{display:none;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:10px 0;text-align:center;}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:spin 0.7s linear infinite;margin-right:6px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── RESULT ── */
+#result{display:none;}
+.verdict{padding:22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:16px;position:relative;overflow:hidden;}
+.verdict::after{content:'';position:absolute;inset:0;opacity:0.04;pointer-events:none;}
+.verdict.ok::after{background:var(--green);}
+.verdict.warn::after{background:var(--yellow);}
+.verdict.fail::after{background:var(--red);}
+.verdict.exp-mode::after{background:var(--purple);}
+.v-icon{font-size:20px;font-weight:800;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.verdict.ok .v-icon{background:var(--green2);color:var(--green);}
+.verdict.warn .v-icon{background:var(--yellow2);color:var(--yellow);}
+.verdict.fail .v-icon{background:var(--red2);color:var(--red);}
+.verdict.exp-mode .v-icon{background:var(--purple2);color:var(--purple);}
+.v-tag{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:4px;font-weight:700;}
+.verdict.ok .v-tag{color:var(--green);}
+.verdict.warn .v-tag{color:var(--yellow);}
+.verdict.fail .v-tag{color:var(--red);}
+.verdict.exp-mode .v-tag{color:var(--purple);}
+.v-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:3px;}
+.v-sub{font-size:12px;color:var(--muted);line-height:1.5;}
+
+.notice-bar{margin:0;padding:12px 18px;border-bottom:1px solid;display:flex;align-items:center;gap:10px;font-size:12px;line-height:1.5;}
+.notice-bar.purple{background:#F4F0FF;border-color:#C4B0F0;color:#3D2B80;}
+.notice-bar.purple strong{color:var(--purple);}
+.notice-bar.yellow{background:#FFFBEB;border-color:#F0D080;color:#6B4A00;}
+.notice-bar.yellow strong{color:var(--yellow);}
+
+.dates-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);background:var(--s2);}
+.dc{padding:16px 18px;border-right:1px solid var(--border);}
+.dc:last-child{border-right:none;}
+.dc-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:6px;font-weight:600;}
+.dc-val{font-size:14px;font-weight:700;}
+.dc-val.orange{color:var(--orange);}
+.dc-val.green{color:var(--green);}
+.dc-val.yellow{color:var(--yellow);}
+.dc-val.red{color:var(--red);}
+.dc-val.purple{color:var(--purple);}
+.dc-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;}
+
+.sum-bar{display:grid;grid-template-columns:repeat(5,1fr);background:var(--s1);border-bottom:1px solid var(--border);}
+.sc{padding:14px 16px;border-right:1px solid var(--border);}
+.sc:last-child{border-right:none;}
+.sc-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:5px;font-weight:600;}
+.sc-val{font-size:18px;font-weight:800;}
+.sc-val.orange{color:var(--orange);}
+.sc-val.green{color:var(--green);}
+.sc-val.yellow{color:var(--yellow);}
+.sc-val.red{color:var(--red);}
+.sc-val.purple{color:var(--purple);}
+
+.permit-callout{margin:0 20px;padding:14px 16px;background:var(--orange3);border:1px solid rgba(232,90,26,0.2);border-left:3px solid var(--orange);display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--border);}
+.pc-city{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.pc-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.pc-meta .hl{color:var(--orange);font-weight:600;}
+.pbadge{font-family:'DM Mono',monospace;font-size:10px;padding:4px 10px;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;font-weight:700;}
+.pbadge-Low{background:#E8F7EF;color:#1A5C3A;border:1px solid #A8D5B8;}
+.pbadge-Medium{background:#FFF8E0;color:#6B4A00;border:1px solid #E8D080;}
+.pbadge-High{background:#FDF2F0;color:#8B1A10;border:1px solid #F0A89A;}
+.pbadge-None,.pbadge-Waiver{background:#FFF8E0;color:#6B4A00;border:1px solid #E8D080;}
+
+.phase-section{padding:20px;}
+.section-head{font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:14px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.section-head::after{content:'';flex:1;height:2px;background:var(--orange2);}
+
+.phase-table{width:100%;border-collapse:collapse;}
+.phase-table thead th{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:2px solid var(--border);background:var(--s2);font-weight:700;}
+.phase-table tbody tr{border-bottom:1px solid var(--border);}
+.phase-table tbody tr:last-child{border-bottom:none;}
+.phase-table tbody tr:hover td{background:var(--s2);}
+.phase-table td{padding:11px 10px;vertical-align:middle;}
+.ph-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);width:24px;height:24px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--s2);font-weight:600;}
+.ph-nc{display:flex;align-items:center;gap:10px;}
+.ph-dot{width:10px;height:10px;flex-shrink:0;border-radius:2px;}
+.ph-name{font-size:13px;font-weight:700;color:var(--text);}
+.ph-note{font-size:11px;color:var(--muted);margin-top:2px;}
+.ph-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);font-weight:500;}
+.ph-days{font-family:'DM Mono',monospace;font-size:12px;font-weight:700;text-align:right;}
+.ph-bar-wrap{height:8px;background:var(--s3);border:1px solid var(--border);}
+.ph-bar{height:100%;}
+
+.gantt-section{padding:0 20px 20px;}
+.gantt-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.gantt-lbl{font-size:11px;color:var(--dim);width:128px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;}
+.gantt-track{flex:1;height:22px;background:var(--s3);border:1px solid var(--border);position:relative;}
+.gantt-bar{position:absolute;top:0;height:100%;display:flex;align-items:center;padding:0 6px;font-family:'DM Mono',monospace;font-size:9px;color:#fff;overflow:hidden;white-space:nowrap;font-weight:700;}
+.gantt-today{position:absolute;top:-2px;width:2px;height:calc(100% + 4px);background:var(--orange);z-index:2;}
+.gantt-today-lbl{position:absolute;top:-15px;font-family:'DM Mono',monospace;font-size:8px;color:var(--orange);white-space:nowrap;transform:translateX(-50%);font-weight:700;}
+.gantt-axis{margin-left:138px;display:flex;justify-content:space-between;margin-top:4px;}
+.gantt-axis span{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);font-weight:600;}
+
+.rec-box{margin:0 20px 0;padding:14px 16px;border-left:3px solid var(--orange);background:#FFF8F5;border:1px solid rgba(232,90,26,0.2);border-left:3px solid var(--orange);font-size:12px;color:var(--dim);line-height:1.8;}
+.rec-box strong{color:var(--text);}
+.rec-box.purple-rec{border-left-color:var(--purple);background:#F8F5FF;border-color:rgba(107,79,191,0.2);}
+
+/* ── ACTIONS ── */
+.actions-section{padding:20px;border-top:1px solid var(--border);}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.action-btn{background:var(--s1);border:1px solid var(--border);color:var(--dim);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:12px 14px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px;}
+.action-btn:hover{border-color:var(--orange);color:var(--text);background:var(--orange3);}
+.action-btn.primary{background:var(--orange);border-color:var(--orange);color:#fff;}
+.action-btn.primary:hover{background:#C84A14;border-color:#C84A14;}
+.action-btn.monday{background:var(--orange3);border-color:rgba(232,90,26,0.3);color:var(--orange);}
+.action-btn.monday:hover{background:var(--orange);color:#fff;}
+.action-btn.email{background:var(--blue2);border-color:rgba(26,107,191,0.3);color:var(--blue);}
+.action-btn.email:hover{background:var(--blue);color:#fff;}
+.ab-icon{font-size:16px;flex-shrink:0;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--border2);box-shadow:0 20px 60px rgba(0,0,0,0.15);max-width:640px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-head{padding:16px 20px;border-bottom:2px solid var(--border);background:var(--s2);display:flex;align-items:center;justify-content:space-between;}
+.modal-head h2{font-size:14px;font-weight:700;color:var(--text);}
+.modal-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 6px;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:22px;}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);background:var(--s2);display:flex;gap:10px;justify-content:flex-end;}
+.btn-sm{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:9px 18px;border:none;cursor:pointer;transition:all 0.15s;}
+.btn-sm.btn-primary{background:var(--orange);color:#fff;box-shadow:0 2px 6px rgba(232,90,26,0.25);}
+.btn-sm.btn-primary:hover{background:#C84A14;}
+.btn-sm.btn-secondary{background:var(--s1);color:var(--dim);border:1px solid var(--border2);}
+.btn-sm.btn-secondary:hover{border-color:var(--text);color:var(--text);}
+.modal-status{margin-top:12px;padding:12px;font-size:12px;line-height:1.6;display:none;white-space:pre-wrap;border-radius:2px;}
+.modal-status.success{background:#F0FAF5;color:#1A5C3A;border:1px solid #A8D5B8;}
+.modal-status.error{background:#FDF2F0;color:#8B1A10;border:1px solid #F0A89A;}
+.modal-status.loading{background:var(--s2);color:var(--dim);border:1px solid var(--border2);}
+
+/* ── INFO BOX ── */
+.info-box{padding:12px 14px;background:#EEF4FF;border:1px solid #BCCFEE;border-left:3px solid var(--blue);font-size:12px;color:#1A3A5C;line-height:1.6;margin-bottom:16px;}
+.info-box strong{color:var(--blue);}
+
+/* ── CRM RESULTS ── */
+.crm-result-item{padding:10px 12px;background:var(--s1);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+.crm-result-item:hover{border-color:var(--orange);background:var(--orange3);}
+.crm-result-item.selected{border-color:var(--green);background:var(--green2);}
+.crm-result-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.crm-result-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+.crm-result-meta .hl{color:var(--orange);}
+.crm-result-meta .stage-sold{color:var(--green);font-weight:700;}
+.crm-result-meta .stage-other{color:var(--yellow);}
+.no-results{padding:16px;font-size:12px;color:var(--muted);text-align:center;border:1px dashed var(--border2);background:var(--s2);}
+.selected-box{padding:12px 14px;background:var(--green2);border:1px solid rgba(26,156,91,0.3);border-left:3px solid var(--green);margin-bottom:16px;}
+
+/* ── WEBHOOK CONFIG ── */
+.webhook-config{background:var(--s2);border:1px solid var(--border);padding:18px;margin-bottom:0;}
+.webhook-config-head{font-family:'DM Mono',monospace;font-size:10px;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;font-weight:700;}
+.webhook-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.webhook-row:last-of-type{margin-bottom:0;}
+.webhook-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);width:130px;flex-shrink:0;font-weight:600;}
+.webhook-input{flex:1;background:var(--s1);border:1px solid var(--border2);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:8px 10px;outline:none;transition:border-color 0.15s;}
+.webhook-input:focus{border-color:var(--orange);}
+.webhook-input.set{border-color:rgba(26,156,91,0.5);color:var(--green);background:#F0FAF5;}
+.btn-save-webhooks{background:var(--orange);border:none;color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:9px 16px;cursor:pointer;margin-top:12px;transition:background 0.15s;}
+.btn-save-webhooks:hover{background:#C84A14;}
+
+@media(max-width:1050px){.main-grid{grid-template-columns:1fr;}.wrap{padding:20px;}header{padding:14px 20px;}.dates-strip{grid-template-columns:1fr 1fr;}.sum-bar{grid-template-columns:1fr 1fr 1fr;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.ani{animation:fadeUp 0.3s ease forwards;}
+@media print{header{position:static;}#leftPanel,#actionButtons,#configBanner{display:none!important;}#result{display:block!important;}.modal-overlay{display:none!important;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">AS</div>
+    <div>
+      <div class="logo-name">Access Signs</div>
+      <div class="logo-tag">Project Timeline Calculator</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="chip" id="dataSourceChip" style="color:#6B4A00;border-color:rgba(107,74,0,0.35);background:#FFF8E0;">Loading permit data...</div>
+    <button class="chip chip-orange" onclick="openConfigModal()" style="cursor:pointer;border:none;">⚙ Configure Webhooks</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- CONFIG BANNER -->
+  <div class="config-banner" id="configBanner">
+    <span style="font-size:20px;flex-shrink:0;">🔗</span>
+    <div class="config-banner-text">
+      <strong>Webhook URLs not configured.</strong> Click "Configure Webhooks" in the header to paste your Make webhook URLs. Once set, the app will load live permit data from Monday and connect to the Sales CRM for handoffs.
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- ── LEFT ── -->
+    <div id="leftPanel">
+      <div class="card">
+        <div class="card-head"><div class="pip"></div><h3>Project Setup</h3></div>
+        <div class="card-body">
+
+          <div class="sep">01 — Project & Client Info</div>
+          <div class="fgroup frow">
+            <div><label class="flabel">Project Name</label><input type="text" class="finput" id="projectName" placeholder="e.g. Starbucks — Laval"></div>
+            <div><label class="flabel">Client Name</label><input type="text" class="finput" id="clientName" placeholder="Client / Company"></div>
+          </div>
+          <div class="fgroup frow">
+            <div><label class="flabel">Client Email</label><input type="email" class="finput" id="clientEmail" placeholder="client@email.com"></div>
+            <div><label class="flabel">Quote #</label><input type="text" class="finput" id="quoteNum" placeholder="QT-XXXX"></div>
+          </div>
+          <div class="fgroup"><label class="flabel">Sales Rep</label><input type="text" class="finput" id="salesRep" placeholder="Your name"></div>
+
+          <div class="sep">02 — Installation City & Permit</div>
+          <div class="loading-city" id="cityLoading"><span class="spinner"></span>Loading cities from Monday...</div>
+          <div class="fgroup" id="citySelectWrap">
+            <label class="flabel">Installation City</label>
+            <select class="fselect" id="citySelect" onchange="onCityChange()"><option value="">— Select city —</option></select>
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">Permit Situation</label>
+            <div class="toggle4" id="permitToggle">
+              <button class="tbtn active" onclick="setPermit('city')">City Permit</button>
+              <button class="tbtn" onclick="setPermit('custom')">Custom Days</button>
+              <button class="tbtn" onclick="setPermit('waiver')">Waiver / Banner</button>
+              <button class="tbtn green-act" onclick="setPermit('none')">No Permit</button>
+            </div>
+            <div id="customPermitWrap" style="display:none;margin-top:6px;">
+              <input class="finput" type="number" id="customPermitDays" min="0" placeholder="Enter business days" oninput="updatePermitRow()">
+            </div>
+            <div id="waiverWrap" style="display:none;margin-top:8px;padding:12px 14px;background:#FFFBEB;border:1px solid #E8D080;border-left:3px solid var(--yellow);">
+              <div style="font-size:11px;color:#6B4A00;font-weight:700;margin-bottom:6px;">⚡ Waiver / Temporary Banner</div>
+              <div style="font-size:11px;color:var(--dim);line-height:1.5;margin-bottom:10px;">Allows installation while permanent permit is in process. Confirm with municipality.</div>
+              <div class="frow">
+                <div><label class="flabel">Waiver Days</label><input class="finput" type="number" id="waiverDays" min="0" value="5" oninput="updatePermitRow()"></div>
+                <div><label class="flabel">Waiver Status</label><select class="fselect" id="waiverStatus"><option>Requested</option><option>Received</option><option>Not Required</option></select></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sep">03 — Production Scale</div>
+          <div class="fgroup">
+            <label class="flabel">Production Scale</label>
+            <div class="toggle2" id="scaleToggle">
+              <button class="tbtn active" onclick="setScale('standard')">Standard<br><span style="font-size:10px;font-weight:400;color:inherit;opacity:0.8;">6–8 wk production</span></button>
+              <button class="tbtn" onclick="setScale('large')">Large Scale<br><span style="font-size:10px;font-weight:400;color:inherit;opacity:0.8;">10–12 wk production</span></button>
+            </div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Expedited Production</label>
+            <div class="exp-row" id="expRow" onclick="cycleExp()">
+              <div>
+                <div class="exp-label" id="expLabel">Expedited Production — Off</div>
+                <div class="exp-sublabel" id="expSublabel">Click to request expedited schedule</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="exp-tag" id="expTag">Sylvain Approval Required</div>
+                <div class="exp-toggle" id="expToggle"></div>
+              </div>
+            </div>
+            <!-- State: pending — two-step async flow -->
+            <div id="approvalPending" style="display:none;margin-top:8px;">
+
+              <!-- Step A: Generate & send request link -->
+              <div id="pendingStepA" style="padding:14px;background:#FFFBEB;border:1px solid #E8D080;border-left:3px solid var(--yellow);">
+                <div style="font-size:12px;font-weight:700;color:#6B4A00;margin-bottom:6px;">⏳ Step 1 — Send Request to Sylvain</div>
+                <div style="font-size:11px;color:var(--dim);line-height:1.55;margin-bottom:12px;">
+                  Click below to send Sylvain a pre-filled review link with the full project timeline. He opens it on his device, reviews the schedule, enters his committed fab days and approval code, then gives you a <strong style="color:#6B4A00;">6-digit return code</strong>.
+                </div>
+                <div class="fgroup" style="margin-bottom:10px;">
+                  <label class="flabel">Send Via</label>
+                  <select class="fselect" id="sendVia">
+                    <option value="teams">Microsoft Teams</option>
+                    <option value="email">Email</option>
+                    <option value="copy">Copy Link Only</option>
+                  </select>
+                </div>
+                <div id="generatedLinkWrap" style="display:none;margin-bottom:10px;">
+                  <label class="flabel">Approval Link — Copy &amp; Send to Sylvain</label>
+                  <div style="display:flex;gap:6px;">
+                    <input type="text" class="finput" id="generatedLinkInput" readonly
+                      style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);background:var(--s2);flex:1;">
+                    <button class="btn-sm btn-primary" onclick="copyGeneratedLink()" id="btnCopyLink" style="font-size:11px;padding:8px 14px;white-space:nowrap;">Copy</button>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:10px;">
+                  <button class="btn-sm btn-primary" onclick="sendApprovalRequest()" style="font-size:11px;padding:8px 16px;">Generate &amp; Send Request →</button>
+                  <button class="btn-sm btn-secondary" onclick="cancelExp()" style="font-size:11px;padding:8px 14px;">Cancel</button>
+                </div>
+                <div id="requestSentConfirm" style="display:none;padding:9px 12px;background:#E8F7EF;border:1px solid #A8D5B8;font-size:11px;color:#1A5C3A;line-height:1.5;">
+                  ✓ Link sent. Once Sylvain reviews and gives you his 6-digit return code, enter it in Step 2 below.
+                </div>
+              </div>
+
+              <!-- Step B: Enter Sylvain's return code -->
+              <div id="pendingStepB" style="margin-top:6px;padding:14px;background:#F4F0FF;border:1px solid #C4B0F0;border-left:3px solid var(--purple);">
+                <div style="font-size:12px;font-weight:700;color:#3D2B80;margin-bottom:6px;">⚡ Step 2 — Enter Sylvain’s Return Code</div>
+                <div style="font-size:11px;color:var(--dim);line-height:1.55;margin-bottom:12px;">
+                  Once Sylvain has reviewed the timeline and set his committed days, he will give you a <strong style="color:#6B4FBF;">6-digit return code</strong>. Enter it below along with the number of fab days he committed.
+                </div>
+                <div class="frow">
+                  <div>
+                    <label class="flabel">Return Code from Sylvain</label>
+                    <input type="text" class="finput" id="returnCode" placeholder="6 digits" oninput="checkReturnCode()"
+                      autocomplete="off" maxlength="6"
+                      style="letter-spacing:0.2em;font-family:'DM Mono',monospace;font-size:18px;font-weight:700;text-align:center;">
+                  </div>
+                  <div>
+                    <label class="flabel">Fab Days Sylvain Committed</label>
+                    <input type="number" class="finput" id="returnFabDays" placeholder="e.g. 18" oninput="checkReturnCode()"
+                      min="1" max="60"
+                      style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:#6B4FBF;">
+                  </div>
+                </div>
+                <div id="returnCodeFeedback" style="display:none;margin-top:8px;font-size:11px;padding:7px 10px;"></div>
+                <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+                  <button class="btn-sm btn-primary" onclick="confirmReturnCode()" id="btnConfirmReturn"
+                    style="font-size:11px;padding:8px 16px;" disabled>Activate Expedited →</button>
+                  <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">Return code valid today only</span>
+                </div>
+              </div>
+
+            </div>
+            <!-- State: approved -->
+            <div id="approvalGranted" style="display:none;margin-top:8px;padding:12px 14px;background:#E8F7EF;border:1px solid #A8D5B8;border-left:3px solid var(--green);">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:#1A5C3A;margin-bottom:2px;">✓ Expedited Approved</div>
+                  <div class="ab-text" id="approvalGrantedText" style="font-size:11px;color:#1A5C3A;"></div>
+                </div>
+                <div style="text-align:center;flex-shrink:0;background:#fff;border:2px solid #6B4FBF;padding:8px 14px;min-width:80px;">
+                  <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:700;color:#6B4FBF;line-height:1;" id="approvedFabDisplay">—</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">Fab Days</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fgroup frow">
+            <div><label class="flabel">Start Date</label><input type="date" class="finput" id="startDate"></div>
+            <div><label class="flabel">Target End Date</label><input type="date" class="finput" id="endDate"></div>
+          </div>
+
+          <div class="sep">04 — Phase Durations (Biz Days)</div>
+          <table class="ptable">
+            <thead><tr><th>Phase</th><th style="text-align:center">Days</th></tr></thead>
+            <tbody id="phaseRows"></tbody>
+          </table>
+          <div class="hint">* Permit days auto-set from selected city (live from Monday).<br>* Production auto-sets from scale. When expedited is approved, Sylvain sets the exact fab days.</div>
+          <button class="btn-calc" onclick="calculate()">Calculate Timeline →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT ── -->
+    <div id="result">
+      <div class="card ani">
+        <div class="verdict" id="vBox"><div class="v-icon" id="vIcon"></div><div><div class="v-tag" id="vTag"></div><div class="v-title" id="vTitle"></div><div class="v-sub" id="vSub"></div></div></div>
+        <div id="expNotice" style="display:none;" class="notice-bar purple"><span style="font-size:16px;flex-shrink:0;">⚡</span><div><strong>Expedited production active — Sylvain approval confirmed.</strong> Fabrication committed to <span id="expNoticeDays" style="font-weight:700;"></span> business days. <span id="expNoticeRef" style="font-size:10px;opacity:0.8;"></span></div></div>
+        <div id="waiverNotice" style="display:none;" class="notice-bar yellow"><span style="font-size:18px;flex-shrink:0;">🏳️</span><div><strong>Waiver / Temporary Banner mode.</strong> Confirm eligibility with municipality before client commitment.</div></div>
+        <div class="dates-strip" id="datesStrip"></div>
+        <div class="sum-bar" id="sumBar"></div>
+        <div class="permit-callout" id="permitCallout"></div>
+        <div class="phase-section">
+          <div class="section-head">Phase Breakdown — Start &amp; End Dates</div>
+          <table class="phase-table">
+            <thead><tr><th style="width:28px">#</th><th>Phase</th><th>Start</th><th>End</th><th style="text-align:right">Days</th><th style="width:100px">Weight</th></tr></thead>
+            <tbody id="phaseBody"></tbody>
+          </table>
+        </div>
+        <div class="gantt-section">
+          <div class="section-head">Gantt View</div>
+          <div id="ganttRows"></div>
+          <div class="gantt-axis" id="ganttAxis"></div>
+        </div>
+        <div class="rec-box" id="recBox"></div>
+        <div class="actions-section" id="actionButtons">
+          <div class="section-head">Actions</div>
+          <div class="action-grid">
+            <button class="action-btn primary" onclick="exportPDF()"><span class="ab-icon">📄</span>Export PDF / Print</button>
+            <button class="action-btn email" onclick="openEmailModal()"><span class="ab-icon">✉️</span>Send to Client</button>
+            <button class="action-btn monday" onclick="openHandoffModal()"><span class="ab-icon">🔁</span>Sales → PM Handoff</button>
+            <button class="action-btn" onclick="copyTimeline()"><span class="ab-icon">📋</span>Copy Timeline Summary</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── WEBHOOK CONFIG MODAL ── -->
+<div class="modal-overlay" id="configModal">
+  <div class="modal">
+    <div class="modal-head"><h2>⚙️ Configure Make Webhooks</h2><button class="modal-close" onclick="closeModal('configModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="info-box" style="margin-bottom:16px;">
+        <strong>Paste your Make webhook URLs below.</strong> These are created when you set up the three Make scenarios. Settings are saved in your browser's local storage — you only need to do this once per device.<br><br>
+        See <strong>MAKE_SETUP.md</strong> for step-by-step scenario setup instructions.
+      </div>
+      <div class="webhook-config">
+        <div class="webhook-config-head">Make Webhook URLs</div>
+        <div class="webhook-row">
+          <div class="webhook-label">Permit Data</div>
+          <input type="text" class="webhook-input" id="wh_permit" placeholder="https://hook.eu2.make.com/...">
+        </div>
+        <div class="webhook-row">
+          <div class="webhook-label">CRM Search</div>
+          <input type="text" class="webhook-input" id="wh_crm" placeholder="https://hook.eu2.make.com/...">
+        </div>
+        <div class="webhook-row">
+          <div class="webhook-label">Handoff Submit</div>
+          <input type="text" class="webhook-input" id="wh_handoff" placeholder="https://hook.eu2.make.com/...">
+        </div>
+        <button class="btn-save-webhooks" onclick="saveWebhooks()">Save & Connect →</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-secondary" onclick="closeModal('configModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EMAIL MODAL ── -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal">
+    <div class="modal-head"><h2>✉️ Send Timeline to Client</h2><button class="modal-close" onclick="closeModal('emailModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="fgroup"><label class="flabel">To</label><input type="email" class="finput" id="emailTo"></div>
+      <div class="fgroup"><label class="flabel">Subject</label><input type="text" class="finput" id="emailSubject"></div>
+      <div class="fgroup"><label class="flabel">Message</label><textarea class="ftextarea" id="emailBody" rows="10"></textarea></div>
+      <div class="modal-status" id="emailStatus"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-secondary" onclick="closeModal('emailModal')">Cancel</button>
+      <button class="btn-sm btn-primary" onclick="sendEmail()">Open in Mail Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── HANDOFF MODAL ── -->
+<div class="modal-overlay" id="handoffModal">
+  <div class="modal">
+    <div class="modal-head"><h2>🔁 Sales → PM Handoff</h2><button class="modal-close" onclick="closeModal('handoffModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="info-box">
+        <strong>How this works:</strong> Finds the existing project in <strong>Sales CRM</strong> via Make, writes the timeline into the <strong>Kickoff Message</strong> field, moves <strong>Stage to Sold</strong>, and posts a PM comment — all through Make without exposing any API keys.
+      </div>
+
+      <div id="searchStep">
+        <div class="sep" style="margin-top:0;">Step 1 — Find in Sales CRM</div>
+        <div class="fgroup">
+          <label class="flabel">Search by Project Name or Quote #</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" class="finput" id="crmSearchInput" placeholder="Type project name or quote number..." style="flex:1;" onkeydown="if(event.key==='Enter')searchCRM()">
+            <button class="btn-sm btn-primary" onclick="searchCRM()" style="white-space:nowrap;">Search</button>
+          </div>
+        </div>
+        <div id="crmResults"></div>
+      </div>
+
+      <div id="confirmStep" style="display:none;">
+        <div class="sep">Step 2 — Configure Handoff</div>
+        <div class="selected-box">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--green);text-transform:uppercase;margin-bottom:4px;">Selected Project</div>
+          <div id="selectedItemName" style="font-size:14px;font-weight:700;"></div>
+          <div id="selectedItemMeta" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;"></div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Move Stage To</label>
+          <div class="toggle3" id="stageToggle">
+            <button class="tbtn active" onclick="setHandoffStage('Sold')">✓ Sold</button>
+            <button class="tbtn" onclick="setHandoffStage('Drawing')">Drawing</button>
+            <button class="tbtn" onclick="setHandoffStage('keep')">Keep Current</button>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Kickoff Message — Timeline Brief for PM</label>
+          <textarea class="ftextarea" id="kickoffMessage" rows="12"></textarea>
+          <div class="hint">Written to the Kickoff Message field on the Sales CRM item via Make.</div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Additional PM Notes (posted as comment)</label>
+          <textarea class="ftextarea" id="pmComment" rows="3" placeholder="Client sensitivities, urgencies, special requirements..."></textarea>
+        </div>
+        <button class="btn-sm btn-secondary" onclick="backToSearch()" style="font-size:11px;">← Back to Search</button>
+      </div>
+      <div class="modal-status" id="handoffStatus"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-secondary" onclick="closeModal('handoffModal')">Cancel</button>
+      <button class="btn-sm btn-primary" id="handoffSubmitBtn" onclick="submitHandoff()" style="display:none;">Submit Handoff →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURATION — paste Make webhook URLs here OR use the
+// ⚙ Configure Webhooks button in the header (saved to localStorage)
+// ═══════════════════════════════════════════════════════════════
+const DEFAULT_CONFIG = {
+  PERMIT_DATA_WEBHOOK: '',   // Make Scenario 1 — Get Permit Data
+  CRM_SEARCH_WEBHOOK:  '',   // Make Scenario 2 — Search Sales CRM
+  HANDOFF_WEBHOOK:     '',   // Make Scenario 3 — Submit Handoff
+};
+
+// Load from localStorage (overrides defaults)
+function getConfig() {
+  try {
+    const saved = localStorage.getItem('as_webhook_config');
+    return saved ? { ...DEFAULT_CONFIG, ...JSON.parse(saved) } : DEFAULT_CONFIG;
+  } catch(e) { return DEFAULT_CONFIG; }
+}
+
+function saveWebhooks() {
+  const cfg = {
+    PERMIT_DATA_WEBHOOK: document.getElementById('wh_permit').value.trim(),
+    CRM_SEARCH_WEBHOOK:  document.getElementById('wh_crm').value.trim(),
+    HANDOFF_WEBHOOK:     document.getElementById('wh_handoff').value.trim(),
+  };
+  localStorage.setItem('as_webhook_config', JSON.stringify(cfg));
+  // Update input styles
+  ['wh_permit','wh_crm','wh_handoff'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.toggle('set', el.value.trim().length > 0);
+  });
+  closeModal('configModal');
+  updateConfigBanner();
+  loadPermitData(); // reload live data with new URLs
+}
+
+function openConfigModal() {
+  const cfg = getConfig();
+  document.getElementById('wh_permit').value = cfg.PERMIT_DATA_WEBHOOK;
+  document.getElementById('wh_crm').value    = cfg.CRM_SEARCH_WEBHOOK;
+  document.getElementById('wh_handoff').value = cfg.HANDOFF_WEBHOOK;
+  ['wh_permit','wh_crm','wh_handoff'].forEach(id => {
+    document.getElementById(id).classList.toggle('set', document.getElementById(id).value.trim().length > 0);
+  });
+  document.getElementById('configModal').classList.add('open');
+}
+
+function updateConfigBanner() {
+  const cfg = getConfig();
+  const banner = document.getElementById('configBanner');
+  const chip   = document.getElementById('dataSourceChip');
+  const allSet = cfg.PERMIT_DATA_WEBHOOK && cfg.CRM_SEARCH_WEBHOOK && cfg.HANDOFF_WEBHOOK;
+  const someSet = cfg.PERMIT_DATA_WEBHOOK || cfg.CRM_SEARCH_WEBHOOK || cfg.HANDOFF_WEBHOOK;
+
+  if (allSet) {
+    banner.style.display = 'none';
+    chip.className = 'chip chip-green';
+    chip.textContent = '✓ Live Data — Make Connected';
+  } else if (someSet) {
+    banner.className = 'config-banner warn';
+    banner.querySelector('.config-banner-text').innerHTML = '<strong>Partially configured.</strong> Some webhook URLs are missing. Click "Configure Webhooks" to complete setup.';
+    chip.className = 'chip chip-yellow';
+    chip.textContent = '⚠ Partial Setup';
+  } else {
+    chip.className = 'chip chip-yellow';
+    chip.textContent = '⚠ Not Connected';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PERMIT DATA — loads from Make on startup, falls back to static
+// ═══════════════════════════════════════════════════════════════
+let CITIES = []; // populated from Make webhook
+let citiesLoaded = false;
+
+// Static fallback data (last-resort if webhook not configured)
+const STATIC_CITIES = [
+  {city:"Montréal",lt:"4–8 weeks",diff:"High",min:4,max:8},
+  {city:"Longueuil",lt:"3–5 weeks",diff:"Medium",min:3,max:5},
+  {city:"Brossard",lt:"3–5 weeks",diff:"Medium",min:3,max:5},
+  {city:"Laval",lt:"3–6 weeks",diff:"Medium",min:3,max:6},
+  {city:"Saint-Lambert",lt:"2–4 weeks",diff:"Low",min:2,max:4},
+  {city:"Boucherville",lt:"2–4 weeks",diff:"Low",min:2,max:4},
+  {city:"Saint-Constant",lt:"2–3 weeks",diff:"Low",min:2,max:3},
+  {city:"Québec City",lt:"4–8 weeks",diff:"High",min:4,max:8},
+  {city:"Toronto",lt:"6–12 weeks",diff:"High",min:6,max:12},
+  {city:"Ottawa",lt:"4–8 weeks",diff:"Medium",min:4,max:8},
+  {city:"Vancouver",lt:"8–16 weeks",diff:"High",min:8,max:16},
+  {city:"Calgary",lt:"4–8 weeks",diff:"Medium",min:4,max:8},
+  {city:"Edmonton",lt:"4–8 weeks",diff:"Medium",min:4,max:8},
+  {city:"Winnipeg",lt:"3–6 weeks",diff:"Low",min:3,max:6},
+  {city:"Halifax",lt:"4–8 weeks",diff:"Medium",min:4,max:8},
+  {city:"New York City",lt:"8–16 weeks",diff:"High",min:8,max:16},
+  {city:"Los Angeles",lt:"6–12 weeks",diff:"High",min:6,max:12},
+  {city:"Chicago",lt:"6–10 weeks",diff:"High",min:6,max:10},
+  {city:"Houston",lt:"2–4 weeks",diff:"Low",min:2,max:4},
+  {city:"Miami",lt:"4–8 weeks",diff:"Medium",min:4,max:8},
+  {city:"Seattle",lt:"6–12 weeks",diff:"High",min:6,max:12},
+  {city:"Boston",lt:"6–12 weeks",diff:"High",min:6,max:12},
+  {city:"San Francisco",lt:"8–16 weeks",diff:"High",min:8,max:16},
+  {city:"Washington DC",lt:"6–12 weeks",diff:"High",min:6,max:12},
+  {city:"Dallas",lt:"3–6 weeks",diff:"Medium",min:3,max:6},
+  {city:"Austin",lt:"3–6 weeks",diff:"Low",min:3,max:6},
+];
+
+function parseLead(lt) {
+  // Parse "4–8 weeks" → {min: 4, max: 8}
+  const m = (lt||'').match(/(\d+)[–\-](\d+)/);
+  return m ? {min:parseInt(m[1]),max:parseInt(m[2])} : {min:4,max:8};
+}
+
+async function loadPermitData() {
+  const cfg = getConfig();
+  const chip = document.getElementById('dataSourceChip');
+  const loadDiv = document.getElementById('cityLoading');
+  const wrapDiv = document.getElementById('citySelectWrap');
+
+  if (!cfg.PERMIT_DATA_WEBHOOK) {
+    // Use static fallback
+    CITIES = STATIC_CITIES;
+    citiesLoaded = true;
+    populateCitySelect();
+    chip.className = 'chip chip-yellow';
+    chip.textContent = '⚠ Static Data (configure webhooks)';
+    return;
+  }
+
+  loadDiv.style.display = 'block';
+  wrapDiv.style.display = 'none';
+  chip.textContent = 'Loading permit data...';
+
+  try {
+    const res = await fetch(cfg.PERMIT_DATA_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'get_permit_data' })
+    });
+    const data = await res.json();
+
+    if (data.cities && Array.isArray(data.cities)) {
+      CITIES = data.cities
+        .filter(c => c.city && c.leadTime)
+        .map(c => {
+          const parsed = parseLead(c.leadTime);
+          return {
+            city: c.city,
+            lt: c.leadTime,
+            diff: c.difficulty || 'Medium',
+            min: parsed.min,
+            max: parsed.max,
+            province: c.province || ''
+          };
+        });
+      citiesLoaded = true;
+      populateCitySelect();
+      chip.className = 'chip chip-green';
+      chip.textContent = '✓ Live Data — ' + CITIES.length + ' cities';
+    } else {
+      throw new Error('Invalid response');
+    }
+  } catch(e) {
+    console.warn('Permit data webhook failed, using static fallback:', e);
+    CITIES = STATIC_CITIES;
+    citiesLoaded = true;
+    populateCitySelect();
+    chip.className = 'chip chip-yellow';
+    chip.textContent = '⚠ Fallback Data (webhook error)';
+  }
+
+  loadDiv.style.display = 'none';
+  wrapDiv.style.display = 'block';
+}
+
+function populateCitySelect() {
+  const sel = document.getElementById('citySelect');
+  sel.innerHTML = '<option value="">— Select city —</option>';
+  [...CITIES].sort((a,b) => a.city.localeCompare(b.city)).forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.city;
+    o.textContent = c.city + ' · ' + c.lt;
+    sel.appendChild(o);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE DEFINITIONS
+// ═══════════════════════════════════════════════════════════════
+const FAB     = {standard:30, large:50};
+const FAB_EXP = {standard:18, large:30};
+const FAB_LBL = {standard:'6–8 wks', large:'10–12 wks'};
+
+const PHASES = [
+  {id:"intake",  name:"Intake",                    note:"Deposit received, contract signed, file opened",  days:7,  color:"#1A6BBF"},
+  {id:"prep",    name:"Permit / Waiver Prep",       note:"Drawing package & submission to municipality",    days:3,  color:"#4A9EFF", permitRelated:true},
+  {id:"permit",  name:"City Permit / Waiver",       note:"Municipality review — auto from city",            days:0,  color:"#6B4FBF", isPermit:true, permitRelated:true},
+  {id:"survey",  name:"Site Survey",                note:"Field measurement & site assessment",             days:3,  color:"#FF6B2B"},
+  {id:"design",  name:"Production Drawing & Approval", note:"Drawings, client revisions, final sign-off",   days:10, color:"#F0B429"},
+  {id:"fab",     name:"Fabrication",                note:"Production — set by project scale",               days:0,  color:"#28C97A", isFab:true},
+  {id:"qc",      name:"Finishing & QC",             note:"Touch-up, final check, prep for crating",        days:3,  color:"#FF5AC4"},
+  {id:"transport",name:"Transport / Crating",       note:"Crating, shipping, delivery to site",             days:0,  color:"#8B5E3C"},
+  {id:"install", name:"Installation",               note:"On-site install & commissioning",                 days:3,  color:"#FF642E"},
+];
+
+let scale = 'standard', permitMode = 'city', expedited = false;
+let calcResult = null, selectedCRMItem = null, handoffStage = 'Sold';
+
+// Build phase input rows
+(function buildPhaseRows() {
+  const tbody = document.getElementById('phaseRows');
+  PHASES.forEach(p => {
+    const d = p.isPermit ? 0 : p.isFab ? FAB[scale] : p.days;
+    const tr = document.createElement('tr');
+    tr.id = 'row_' + p.id;
+    tr.innerHTML = `<td><div class="pname">${p.name}<small>${p.note}</small></div></td>
+      <td><input class="pdays" id="d_${p.id}" type="number" min="0" value="${d}" ${p.isPermit?'readonly':''}></td>`;
+    tbody.appendChild(tr);
+  });
+})();
+
+// Default dates
+const today = new Date();
+const fmt = d => d.toISOString().slice(0,10);
+document.getElementById('startDate').value = fmt(today);
+const de = new Date(today); de.setDate(de.getDate()+120);
+document.getElementById('endDate').value = fmt(de);
+
+// ═══════════════════════════════════════════════════════════════
+// CONTROLS
+// ═══════════════════════════════════════════════════════════════
+function setScale(s) {
+  scale = s;
+  document.querySelectorAll('#scaleToggle .tbtn').forEach((b,i) => b.classList.toggle('active', (i===0&&s==='standard')||(i===1&&s==='large')));
+  updateFabRow();
+}
+function setPermit(mode) {
+  permitMode = mode;
+  const btns = document.querySelectorAll('#permitToggle .tbtn');
+  btns.forEach(b => b.classList.remove('active'));
+  btns[['city','custom','waiver','none'].indexOf(mode)].classList.add('active');
+  document.getElementById('customPermitWrap').style.display = mode==='custom' ? 'block' : 'none';
+  document.getElementById('waiverWrap').style.display = mode==='waiver' ? 'block' : 'none';
+  ['prep','permit'].forEach(id => { document.getElementById('row_'+id).style.display = mode==='none' ? 'none' : ''; });
+  updatePermitRow();
+}
+function onCityChange() { if(permitMode==='city') updatePermitRow(); }
+function updatePermitRow() {
+  const inp = document.getElementById('d_permit');
+  if (!inp) return;
+  if (permitMode==='none') { inp.value=0; return; }
+  if (permitMode==='waiver') { inp.value = parseInt(document.getElementById('waiverDays').value)||5; return; }
+  if (permitMode==='custom') { inp.value = parseInt(document.getElementById('customPermitDays').value)||0; return; }
+  const city = document.getElementById('citySelect').value;
+  if (!city) { inp.value=0; return; }
+  const p = CITIES.find(c => c.city===city);
+  if (p) inp.value = Math.round(((p.min+p.max)/2)*5);
+}
+function updateFabRow() {
+  const fi = document.getElementById('d_fab');
+  if (!fi) return;
+  if (expedited) {
+    // Use Sylvain's custom days if approved, otherwise default EXP
+    const sylvainDays = parseInt(document.getElementById('sylvainFabDays')?.value) || 0;
+    fi.value = sylvainDays > 0 ? sylvainDays : FAB_EXP[scale];
+    fi.classList.add('exp-days');
+  } else {
+    fi.value = FAB[scale];
+    fi.classList.remove('exp-days');
+  }
+}
+// ── EXPEDITED: 3-STATE FLOW ──────────────────────────────────────
+// States: 'off' → 'pending' → (approval required) → 'approved'
+let expState = 'off'; // 'off' | 'pending' | 'approved'
+
+function cycleExp() {
+  if (expState === 'off') {
+    setExpState('pending');
+  } else if (expState === 'pending') {
+    setExpState('off');
+  } else if (expState === 'approved') {
+    // Click on approved row = revoke
+    if (confirm('Remove Sylvain\'s expedited approval and revert to standard production?')) {
+      setExpState('off');
+    }
+  }
+}
+
+function setExpState(state) {
+  expState = state;
+  expedited = state === 'approved';
+
+  const row    = document.getElementById('expRow');
+  const label  = document.getElementById('expLabel');
+  const sub    = document.getElementById('expSublabel');
+  const tag    = document.getElementById('expTag');
+  const toggle = document.getElementById('expToggle');
+  const pending = document.getElementById('approvalPending');
+  const granted = document.getElementById('approvalGranted');
+
+  // Reset classes
+  row.className = 'exp-row';
+  toggle.className = 'exp-toggle';
+  tag.className = 'exp-tag';
+
+  if (state === 'off') {
+    label.textContent = 'Expedited Production — Off';
+    sub.textContent   = 'Click to request expedited schedule';
+    pending.style.display = 'none';
+    granted.style.display = 'none';
+    // Reset Sylvain's fab days field and panel
+    const sylvainWrap = document.getElementById('sylvainFabWrap');
+    if (sylvainWrap) sylvainWrap.style.display = 'none';
+    const sylvainInput = document.getElementById('sylvainFabDays');
+    if (sylvainInput) sylvainInput.value = '';
+  } else if (state === 'pending') {
+    row.classList.add('pending');
+    toggle.classList.add('pending');
+    tag.classList.add('pending');
+    tag.textContent   = '⏳ Pending Approval';
+    label.textContent = 'Expedited Production — Awaiting Sylvain';
+    sub.textContent   = 'Send request → get return code from Sylvain to activate';
+    pending.style.display = 'block';
+    granted.style.display = 'none';
+    // Reset all fields
+    const rc = document.getElementById('returnCode');    if(rc) rc.value='';
+    const rf = document.getElementById('returnFabDays'); if(rf) rf.value='';
+    const fb = document.getElementById('returnCodeFeedback'); if(fb) fb.style.display='none';
+    const sc = document.getElementById('requestSentConfirm'); if(sc) sc.style.display='none';
+    const br = document.getElementById('btnConfirmReturn'); if(br) br.disabled=true;
+  } else if (state === 'approved') {
+    // Days come from the return code flow (returnFabDays field)
+    const sylvainDays = parseInt(document.getElementById('returnFabDays')?.value) || FAB_EXP[scale];
+    row.classList.add('approved');
+    toggle.classList.add('on');
+    tag.classList.add('approved');
+    tag.textContent   = '✓ Approved';
+    label.textContent = 'Expedited Production — ON ⚡';
+    sub.textContent = 'Approved by Sylvain · ' + sylvainDays + 'bd committed · Click to revoke';
+    pending.style.display = 'none';
+    granted.style.display = 'block';
+    document.getElementById('approvalGrantedText').textContent =
+      'Approved by Sylvain Codere · ' + sylvainDays + 'bd committed · ' + new Date().toLocaleDateString('en-CA');
+    document.getElementById('approvedFabDisplay').textContent = sylvainDays + 'd';
+    // Store committed days on a shared field so calculate() can read it
+    let sfd = document.getElementById('sylvainFabDays');
+    if (!sfd) {
+      sfd = document.createElement('input');
+      sfd.type = 'hidden'; sfd.id = 'sylvainFabDays';
+      document.body.appendChild(sfd);
+    }
+    sfd.value = sylvainDays;
+  }
+
+  updateFabRow();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ROTATING APPROVAL CODE — HMAC-SHA256 based, daily rotation
+// The secret is never shown in the UI. The code is derived from
+// HMAC(secret, YYYY-MM-DD) → first 6 chars uppercase.
+// Sylvain's page derives the same code independently.
+// ═══════════════════════════════════════════════════════════════
+const APPROVAL_SECRET = 'AS-OPS-SC-2026'; // Change this to a private value known only to you
+
+async function deriveCode(secret, dateStr) {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secret);
+  const msgData = encoder.encode(dateStr);
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+  const bytes = new Uint8Array(sig);
+  // Convert to base36 string, take first 6 chars, uppercase
+  let hex = Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+  // Convert hex to base36-like alphanumeric (more readable)
+  const chars = 'ACEFGHJKLMNPQRTUVWXY3479'; // no ambiguous chars (0,O,1,I,5,S,8,B)
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    const byte = parseInt(hex.slice(i*2, i*2+2), 16);
+    code += chars[byte % chars.length];
+  }
+  return code;
+}
+
+function todayDateStr() {
+  const now = new Date();
+  return now.toLocaleDateString('en-CA'); // YYYY-MM-DD in local timezone
+}
+
+// ── RETURN CODE DERIVATION ───────────────────────────────────────
+// Return code = HMAC(secret, date + ":" + fabDays) → 6 digits (0-9)
+// This encodes both the date and Sylvain's committed days so it
+// can't be fabricated or reused for a different day or day count.
+async function deriveReturnCode(secret, dateStr, fabDays) {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secret);
+  const msgData = encoder.encode(dateStr + ':' + fabDays);
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+  const bytes = new Uint8Array(sig);
+  // Convert to 6 digits (0-9 only — easy to read aloud / type on phone)
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += (bytes[i] % 10).toString();
+  }
+  return code;
+}
+
+// ── STEP 1: SEND REQUEST ─────────────────────────────────────────
+function buildApprovalURL() {
+  // Build URL pointing to sylvain-approval.html in the same folder as this file.
+  // Works for: GitHub Pages, SharePoint, local files.
+  const here = window.location.href.split('?')[0];
+  const sylvainPage = here.substring(0, here.lastIndexOf('/') + 1) + 'sylvain-approval.html';
+
+  const params = new URLSearchParams();
+
+  // Core project info — lightweight scalars only (no phase JSON, keeps URL short & clean)
+  params.set('project', document.getElementById('projectName')?.value  || '');
+  params.set('client',  document.getElementById('clientName')?.value   || '');
+  params.set('quote',   document.getElementById('quoteNum')?.value      || '');
+  params.set('city',    document.getElementById('citySelect')?.value    || '');
+  params.set('scale',   scale);
+  params.set('permit',  permitMode);
+  params.set('start',   document.getElementById('startDate')?.value    || '');
+  params.set('target',  document.getElementById('endDate')?.value      || '');
+  params.set('stdFab',  FAB[scale]);
+  params.set('expFab',  FAB_EXP[scale]);
+
+  // Calculated result scalars — available only after Calculate is run
+  if (calcResult) {
+    params.set('projEnd', calcResult.projEnd.toLocaleDateString('en-CA'));
+    params.set('onTime',  calcResult.onTime  ? '1' : '0');
+    params.set('buffer',  String(calcResult.rawDiff));
+    params.set('total',   String(calcResult.total));
+    // Pass compact phase schedule: "PhaseName|startDate|endDate|days|isFab" rows joined by ~
+    const phaseStr = calcResult.phases.map(p =>
+      [p.name,
+       p.start.toLocaleDateString('en-CA'),
+       p.end.toLocaleDateString('en-CA'),
+       p.days,
+       p.isFab ? '1' : '0',
+       p.color
+      ].join('|')
+    ).join('~');
+    params.set('ph', phaseStr);
+  }
+
+  return sylvainPage + '?' + params.toString();
+}
+
+function sendApprovalRequest() {
+  if (!calcResult) {
+    alert('Please run Calculate Timeline first — Sylvain needs to see the actual calculated schedule.');
+    return;
+  }
+
+  const url  = buildApprovalURL();
+  const via  = document.getElementById('sendVia')?.value || 'copy';
+  const proj = document.getElementById('projectName')?.value || 'a project';
+  const city = document.getElementById('citySelect')?.value  || '';
+  const msg  = 'Expedited production approval needed for ' + proj + (city ? ' (' + city + ')' : '') + '.\n\nOpen the link, review the timeline, enter your committed fab days + approval code, then give the sales rep your 6-digit return code.\n\n' + url;
+
+  // Always show the link inline so they can copy it manually if other methods fail
+  const linkWrap  = document.getElementById('generatedLinkWrap');
+  const linkInput = document.getElementById('generatedLinkInput');
+  if (linkWrap && linkInput) {
+    linkInput.value = url;
+    linkWrap.style.display = 'block';
+  }
+
+  if (via === 'teams') {
+    window.open('https://teams.microsoft.com/l/chat/0/0?message=' + encodeURIComponent(msg), '_blank');
+  } else if (via === 'email') {
+    window.location.href = 'mailto:sylvain@accessigns.com'
+      + '?subject=' + encodeURIComponent('Expedited Approval — ' + proj)
+      + '&body=' + encodeURIComponent(msg);
+  } else {
+    // Copy only — link already shown above
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        const btn = document.getElementById('btnCopyLink');
+        if (btn) { btn.textContent = '✓ Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+      })
+      .catch(() => {});
+  }
+
+  document.getElementById('requestSentConfirm').style.display = 'block';
+}
+
+function copyGeneratedLink() {
+  const url = document.getElementById('generatedLinkInput')?.value || '';
+  const btn = document.getElementById('btnCopyLink');
+  navigator.clipboard.writeText(url)
+    .then(() => { if (btn) { btn.textContent = '✓ Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); } })
+    .catch(() => { prompt('Copy this link:', url); });
+}
+
+// ── STEP 2: VALIDATE RETURN CODE ────────────────────────────────
+async function checkReturnCode() {
+  const entered  = (document.getElementById('returnCode')?.value || '').trim();
+  const fabDays  = parseInt(document.getElementById('returnFabDays')?.value) || 0;
+  const feedback = document.getElementById('returnCodeFeedback');
+  const btn      = document.getElementById('btnConfirmReturn');
+
+  if (entered.length < 6 || fabDays < 1) {
+    btn.disabled = true;
+    feedback.style.display = 'none';
+    return;
+  }
+
+  const validReturn = await deriveReturnCode(APPROVAL_SECRET, todayDateStr(), fabDays);
+
+  if (entered === validReturn) {
+    feedback.style.cssText = 'display:block;background:#E8F7EF;color:#1A5C3A;border:1px solid #A8D5B8;padding:7px 10px;font-size:11px;';
+    feedback.textContent = '\u2713 Return code verified \u2014 Sylvain committed ' + fabDays + ' fabrication days. Click Activate to proceed.';
+    btn.disabled = false;
+  } else {
+    feedback.style.cssText = 'display:block;background:#FDF2F0;color:#8B1A10;border:1px solid #F0A89A;padding:7px 10px;font-size:11px;';
+    feedback.textContent = '\u2717 Code does not match. Check the fab days and code, or ask Sylvain to re-generate.';
+    btn.disabled = true;
+  }
+}
+
+async function confirmReturnCode() {
+  const entered  = (document.getElementById('returnCode')?.value || '').trim();
+  const fabDays  = parseInt(document.getElementById('returnFabDays')?.value) || 0;
+  // Re-validate
+  const validReturn = await deriveReturnCode(APPROVAL_SECRET, todayDateStr(), fabDays);
+  if (entered !== validReturn || fabDays < 1) {
+    alert('Code is no longer valid or fab days are missing. Please re-check with Sylvain.');
+    return;
+  }
+  setExpState('approved');
+}
+
+function cancelExp() {
+  setExpState('off');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+function addBD(date, days) {
+  let d = new Date(date), a = 0;
+  if (days===0) return d;
+  while (a<days) { d.setDate(d.getDate()+1); if(d.getDay()!==0&&d.getDay()!==6) a++; }
+  return d;
+}
+function subBD(date, days) {
+  let d = new Date(date), s = 0;
+  while (s<days) { d.setDate(d.getDate()-1); if(d.getDay()!==0&&d.getDay()!==6) s++; }
+  return d;
+}
+function bdBetween(a, b) {
+  if (b<=a) return 0;
+  let c = 0, d = new Date(a);
+  while (d<b) { d.setDate(d.getDate()+1); if(d.getDay()!==0&&d.getDay()!==6) c++; }
+  return c;
+}
+function fd(d)  { return d.toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}); }
+function fds(d) { return d.toLocaleDateString('en-CA',{month:'short',day:'numeric'}); }
+
+// ═══════════════════════════════════════════════════════════════
+// CALCULATE
+// ═══════════════════════════════════════════════════════════════
+function calculate() {
+  const cityName = document.getElementById('citySelect').value;
+  const sv = document.getElementById('startDate').value;
+  const ev = document.getElementById('endDate').value;
+  if (!cityName) { alert('Please select a city.'); return; }
+  if (!sv||!ev)  { alert('Please set start and end dates.'); return; }
+
+  // Block if expedited is pending approval
+  if (expState === 'pending') {
+    alert('Expedited production is pending Sylvain\'s approval.\n\nEnter Sylvain\'s name and approval code to confirm, or cancel to revert to standard production.');
+    document.getElementById('approvalName').focus();
+    return;
+  }
+
+  const pd = CITIES.find(c => c.city===cityName);
+  if (!pd) { alert('City data not found. Please refresh.'); return; }
+
+  let pAvg=0, pMin=0;
+  if (permitMode==='none') { pAvg=0; pMin=0; }
+  else if (permitMode==='waiver') { pAvg=parseInt(document.getElementById('waiverDays').value)||5; pMin=pAvg; }
+  else if (permitMode==='custom') { pAvg=parseInt(document.getElementById('customPermitDays').value)||0; pMin=pAvg; }
+  else { pAvg=Math.round(((pd.min+pd.max)/2)*5); pMin=pd.min*5; }
+
+  document.getElementById('d_permit').value = pAvg;
+
+  // Resolve expedited fab days — use Sylvain's committed value if approved, else standard EXP reduction
+  const sylvainCommitted = parseInt(document.getElementById('sylvainFabDays')?.value) || 0;
+  const expFabDays = (expedited && sylvainCommitted > 0) ? sylvainCommitted : FAB_EXP[scale];
+
+  const phases = PHASES
+    .filter(p => permitMode==='none' ? !p.permitRelated : true)
+    .map(p => {
+      let d = parseInt(document.getElementById('d_'+p.id)?.value)||0;
+      if (p.isPermit) d = pAvg;
+      if (p.isFab)    d = expedited ? expFabDays : FAB[scale];
+      return {...p, days:d};
+    });
+
+  const total     = phases.reduce((s,p) => s+p.days, 0);
+  const startDate = new Date(sv+'T12:00:00');
+  const endDate   = new Date(ev+'T12:00:00');
+  const available = bdBetween(startDate, endDate);
+  const reqStart  = subBD(endDate, total);
+
+  let cur = new Date(startDate);
+  phases.forEach(p => { p.start=new Date(cur); p.end=addBD(cur,p.days); cur=new Date(p.end); });
+
+  const projEnd  = phases[phases.length-1].end;
+  const onTime   = projEnd <= endDate;
+  const rawDiff  = bdBetween(onTime?projEnd:endDate, onTime?endDate:projEnd) * (onTime?1:-1);
+  const close    = !onTime && Math.abs(rawDiff)<=5;
+
+  let vClass, vIcon, vTag, vTitle, vSub;
+  if (expedited && onTime) {
+    vClass='exp-mode'; vIcon='⚡'; vTag='Feasible — Expedited · Sylvain Approval Required';
+    vTitle=`Expedited fits deadline — ${rawDiff}d buffer.`;
+    vSub="Sylvain's approval required before confirming with client.";
+  } else if (onTime) {
+    vClass='ok'; vIcon='✓'; vTag='Timeline Feasible';
+    vTitle=`${rawDiff} business day${rawDiff!==1?'s':''} ahead of target.`;
+    vSub=`${scale==='large'?'Large scale':'Standard'} production fits within schedule.`;
+  } else if (close) {
+    vClass='warn'; vIcon='⚠'; vTag='Tight — Monitor Closely';
+    vTitle=`${Math.abs(rawDiff)} business day${Math.abs(rawDiff)!==1?'s':''} past target.`;
+    vSub='Within one week. Consider expedited production (Sylvain approval).';
+  } else {
+    vClass='fail'; vIcon='✗'; vTag='Timeline Not Achievable';
+    vTitle=`Misses by ${Math.abs(rawDiff)} days (${Math.round(Math.abs(rawDiff)/5)} wks).`;
+    vSub=`Earliest: ${fd(projEnd)}. Required start: ${fd(reqStart)}.`;
+  }
+
+  calcResult = {phases, total, startDate, endDate, projEnd, onTime, rawDiff, close, vClass, vTag, vTitle, pd, pAvg, pMin, available, reqStart, vSub};
+
+  // Show result panel
+  const res = document.getElementById('result');
+  res.style.display = 'block';
+  const panel = res.querySelector('.card');
+  panel.classList.remove('ani'); void panel.offsetWidth; panel.classList.add('ani');
+
+  // Verdict
+  document.getElementById('vBox').className = 'verdict ' + vClass;
+  document.getElementById('vIcon').textContent  = vIcon;
+  document.getElementById('vTag').textContent   = vTag;
+  document.getElementById('vTitle').textContent = vTitle;
+  document.getElementById('vSub').textContent   = vSub;
+  document.getElementById('expNotice').style.display = expedited ? 'flex' : 'none';
+  if (expedited) {
+    const ref = document.getElementById('approvalGrantedText')?.textContent || '';
+    document.getElementById('expNoticeRef').textContent = ref;
+    document.getElementById('expNoticeDays').textContent = expFabDays;
+  }
+  document.getElementById('waiverNotice').style.display = permitMode==='waiver' ? 'flex' : 'none';
+
+  // Dates strip
+  const bC = onTime ? 'green' : close ? 'yellow' : 'red';
+  const psp      = phases.find(p => p.id==='prep');
+  const pintake  = phases.find(p => p.id==='intake');
+  const pfab     = phases.find(p => p.isFab);
+  document.getElementById('datesStrip').innerHTML = `
+    <div class="dc"><div class="dc-lbl">Project Start</div><div class="dc-val orange">${fd(startDate)}</div><div class="dc-sub">Day 1 — Intake opens</div></div>
+    <div class="dc"><div class="dc-lbl">Deposit &amp; Contract</div>
+      <div class="dc-val">${pintake?fd(pintake.end):fd(startDate)}</div>
+      <div class="dc-sub">End of intake phase (7d)</div></div>
+    <div class="dc"><div class="dc-lbl">${permitMode==='none'?'Fabrication Start':permitMode==='waiver'?'Waiver Submitted':'Permit Submitted'}</div>
+      <div class="dc-val">${psp?fd(psp.end):pfab?fd(pfab.start):fd(startDate)}</div>
+      <div class="dc-sub">${permitMode==='none'?'No permit needed':'After intake + permit prep'}</div></div>
+    <div class="dc"><div class="dc-lbl">Projected Completion</div><div class="dc-val ${expedited?'purple':bC}">${fd(projEnd)}</div>
+      <div class="dc-sub">${onTime?rawDiff+'d buffer':Math.abs(rawDiff)+'d over'}</div></div>`;
+
+  // Key date row 2 — target
+  // (keep target in summary bar instead of dates strip to fit 4 cols)
+
+  // Summary bar
+  const fd2 = expedited ? expFabDays : FAB[scale];
+  const prodLabel = expedited
+    ? (sylvainCommitted > 0 ? `⚡ ${fd2}d — Sylvain` : `⚡ ${fd2}d Exp`)
+    : `${fd2}d · ${FAB_LBL[scale]}`;
+  document.getElementById('sumBar').innerHTML = `
+    <div class="sc"><div class="sc-lbl">Available</div><div class="sc-val">${available}d</div></div>
+    <div class="sc"><div class="sc-lbl">Required</div><div class="sc-val ${onTime?'green':'red'}">${total}d</div></div>
+    <div class="sc"><div class="sc-lbl">Permit</div><div class="sc-val ${permitMode==='none'?'green':'orange'}">${permitMode==='none'?'N/A':pAvg+'d'}</div></div>
+    <div class="sc"><div class="sc-lbl">Production</div><div class="sc-val ${expedited?'purple':''}" style="${!expedited?'font-size:13px;color:var(--dim);font-weight:700;':'font-size:14px;'}">${prodLabel}</div></div>
+    <div class="sc"><div class="sc-lbl">Client Target</div><div class="sc-val orange" style="font-size:13px;">${fd(endDate)}</div></div>`;
+
+  // Permit callout
+  const pcD = permitMode==='none' ? 'None' : pd.diff;
+  document.getElementById('permitCallout').innerHTML = permitMode==='none'
+    ? `<div><div class="pc-city">${pd.city}</div><div class="pc-meta">Permit phases <span class="hl">skipped</span>.</div></div><div class="pbadge pbadge-None">No Permit</div>`
+    : permitMode==='waiver'
+    ? `<div><div class="pc-city">${pd.city} — Waiver / Banner</div><div class="pc-meta">City lead: <span class="hl">${pd.lt}</span> · Waiver est: <span class="hl">${pAvg}bd</span> · Status: <span class="hl">${document.getElementById('waiverStatus').value}</span></div></div><div class="pbadge pbadge-Waiver">Waiver</div>`
+    : `<div><div class="pc-city">${pd.city}${pd.province?' — '+pd.province:''}</div><div class="pc-meta">Lead: <span class="hl">${pd.lt}</span> · Avg: <span class="hl">${pAvg}bd</span>${permitMode==='custom'?' (custom)':' (avg)'} · Min: <span class="hl">${pMin}bd</span></div></div><div class="pbadge pbadge-${pcD}">${pcD}</div>`;
+
+  // Phase breakdown
+  document.getElementById('phaseBody').innerHTML = phases.map((p,i) => `
+    <tr>
+      <td><div class="ph-num">${i+1}</div></td>
+      <td><div class="ph-nc"><div class="ph-dot" style="background:${p.color}"></div><div><div class="ph-name">${p.name}</div><div class="ph-note">${p.note}</div></div></div></td>
+      <td><div class="ph-date">${fds(p.start)}</div></td>
+      <td><div class="ph-date" style="color:var(--text);font-weight:700">${fds(p.end)}</div></td>
+      <td><div class="ph-days" style="color:${p.color}">${p.days}d</div></td>
+      <td><div class="ph-bar-wrap"><div class="ph-bar" style="width:${Math.max(3,(p.days/total)*100)}%;background:${p.color}"></div></div></td>
+    </tr>`).join('');
+
+  // Gantt
+  const gE   = projEnd > endDate ? projEnd : endDate;
+  const span = Math.max(1, bdBetween(startDate, gE)+1);
+  const tPct = Math.min(100, Math.max(0, (bdBetween(startDate, today)/span)*100));
+  document.getElementById('ganttRows').innerHTML = phases.map(p => {
+    const l = (bdBetween(startDate, p.start)/span)*100;
+    const w = Math.max(1, (p.days/span)*100);
+    return `<div class="gantt-row">
+      <div class="gantt-lbl" title="${p.name}">${p.name}</div>
+      <div class="gantt-track">
+        <div class="gantt-bar" style="left:${l}%;width:${w}%;background:${p.color}">${p.days}d</div>
+        ${tPct>0&&tPct<100 ? `<div class="gantt-today" style="left:${tPct}%"><span class="gantt-today-lbl">Today</span></div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('ganttAxis').innerHTML = `<span>${fds(startDate)}</span><span>${fds(gE)}</span>`;
+
+  // Recommendation
+  const approvalRef = document.getElementById('approvalGrantedText')?.textContent || '';
+  let rec='', rcls='rec-box';
+  if (expedited) {
+    rcls = 'rec-box purple-rec';
+    const commitNote = sylvainCommitted > 0
+      ? `Sylvain committed to <strong>${sylvainCommitted} fabrication days</strong> (standard is ${FAB[scale]}bd, default exp. would be ${FAB_EXP[scale]}bd).`
+      : `Fabrication compressed to <strong>${expFabDays}bd</strong> (default ~40% reduction).`;
+    rec = `<strong>⚡ Expedited production — approved by Sylvain.</strong> ${approvalRef ? '<span style="font-size:10px;color:var(--muted);">('+approvalRef+')</span>' : ''}
+      <br><br>${commitNote}
+      <br><br>${onTime ? `✓ Timeline is feasible with <strong>${rawDiff}d buffer</strong>. Deposit &amp; contract target: <strong>${pintake?fd(pintake.end):'—'}</strong>.` : `⚠ Earliest completion: <strong>${fd(projEnd)}</strong> — ${Math.abs(rawDiff)}d past target even with Sylvain's committed days.`}`;
+  } else if (permitMode==='waiver' && onTime) {
+    rec = `<strong>🏳️ Waiver/Banner path — proceed with submission.</strong> Est. <strong>${pAvg}bd</strong> for waiver approval. Confirm eligibility with <strong>${pd.city}</strong> before client commitment.
+      <br><br>Deposit &amp; contract target: <strong>${pintake?fd(pintake.end):'—'}</strong>.`;
+  } else if (onTime) {
+    rec = `<strong>✓ Proceed with current schedule.</strong>
+      <br><br>
+      🔵 <strong>Deposit &amp; contract</strong> by <strong>${pintake?fd(pintake.end):'—'}</strong>
+      ${permitMode!=='none' ? `<br>📋 <strong>${permitMode==='waiver'?'Waiver':'Permit'} submission</strong> by <strong>${psp?fd(psp.end):'—'}</strong>` : ''}
+      <br>🏭 <strong>Fabrication starts</strong> <strong>${pfab?fd(pfab.start):'—'}</strong>
+      <br><br>Production: <strong>${FAB[scale]}bd (${FAB_LBL[scale]})</strong>.${pd.diff==='High'&&permitMode==='city'?`<br><br>⚠️ <strong>${pd.city} is High complexity.</strong> Flag with PM — build in follow-up cadence with the municipality.`:''}`;
+  } else if (close) {
+    rec = `<strong>⚡ Tight — monitor closely.</strong> Enable expedited production (requires Sylvain's approval via the toggle above) to recover ${Math.abs(rawDiff)} days.
+      <br><br>Deposit &amp; contract target: <strong>${pintake?fd(pintake.end):'—'}</strong>.`;
+  } else {
+    rec = `<strong>✗ Timeline cannot be met.</strong><br><br><strong>Options:</strong><br>
+      1. Enable expedited production (Sylvain approval required) — saves ~${FAB[scale]-FAB_EXP[scale]}d<br>
+      2. Revise client deadline to <strong>${fd(projEnd)}</strong><br>
+      3. Required start date for current deadline: <strong>${fd(reqStart)}</strong><br>
+      4. Phase delivery — priority signs first, secondary to follow`;
+  }
+  document.getElementById('recBox').className = rcls;
+  document.getElementById('recBox').innerHTML  = rec;
+
+  // Pre-fill action modals
+  document.getElementById('emailTo').value      = document.getElementById('clientEmail').value || '';
+  document.getElementById('emailSubject').value = `Project Timeline — ${document.getElementById('projectName').value||'Project'}`;
+  document.getElementById('emailBody').value    = buildEmailBody();
+  document.getElementById('crmSearchInput').value = document.getElementById('projectName').value || document.getElementById('quoteNum').value || '';
+
+  if (window.innerWidth < 1050) res.scrollIntoView({behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TEXT BUILDERS
+// ═══════════════════════════════════════════════════════════════
+function buildEmailBody() {
+  if (!calcResult) return '';
+  const {phases, projEnd, endDate, onTime, rawDiff, pAvg} = calcResult;
+  const pn = document.getElementById('projectName').value || 'Project';
+  const cn = document.getElementById('clientName').value  || 'Client';
+  const sr = document.getElementById('salesRep').value    || 'Access Signs Team';
+  const qn = document.getElementById('quoteNum').value;
+  const lines = [
+    `Dear ${cn},`, '',
+    `Please find below the project timeline for ${pn}${qn?' (Quote #'+qn+')':''}.`, '',
+    'PROJECT TIMELINE SUMMARY', '─────────────────────────'
+  ];
+  phases.forEach(p => lines.push(`${(p.name+'                              ').slice(0,30)}${fds(p.start)} → ${fds(p.end)}  (${p.days} biz days)`));
+  lines.push('', `Projected Completion: ${fd(projEnd)}`, `Target Date: ${fd(endDate)}`,
+    onTime ? `Status: ✓ ON TRACK — ${rawDiff}d buffer` : `Status: ⚠ ${Math.abs(rawDiff)}d past target`);
+  if (permitMode==='waiver') lines.push('\nNote: Timeline based on waiver/banner approval. If denied, full permit timeline applies.');
+  if (expedited)             lines.push('\nNote: Expedited production — subject to internal capacity confirmation.');
+  lines.push('', 'Please review and confirm at your earliest convenience.', '', `Best regards,`, sr, 'Access Signs');
+  return lines.join('\n');
+}
+
+function buildKickoffMessage() {
+  if (!calcResult) return '';
+  const {phases, projEnd, endDate, onTime, rawDiff, pd, pAvg} = calcResult;
+  const pn   = document.getElementById('projectName').value || '';
+  const cn   = document.getElementById('clientName').value  || '';
+  const qn   = document.getElementById('quoteNum').value    || '';
+  const sr   = document.getElementById('salesRep').value    || '';
+  const city = document.getElementById('citySelect').value;
+  const lines = [
+    '━━━ SALES → PM HANDOFF ━━━',
+    `Project: ${pn}${cn?' | Client: '+cn:''}${qn?' | Quote: '+qn:''}`,
+    `Sales Rep: ${sr}`,
+    `Handoff Date: ${new Date().toLocaleDateString('en-CA')}`,
+    '', '── TIMELINE ──────────────────────'
+  ];
+  phases.forEach(p => lines.push(`${(p.name+'                              ').slice(0,28)}${fds(p.start)} → ${fds(p.end)} (${p.days}bd)`));
+  lines.push('',
+    `Projected Completion: ${fd(projEnd)}`,
+    `Client Target:        ${fd(endDate)}`,
+    `Verdict: ${onTime?`✓ ON TRACK (+${rawDiff}bd buffer)`:`⚠ OVER by ${Math.abs(rawDiff)}bd`}`,
+    '', '── PERMIT ─────────────────────────',
+    `City: ${city}`,
+    `Mode: ${permitMode==='waiver'?'Waiver / Banner':permitMode==='none'?'No Permit Required':permitMode==='custom'?'Custom ('+pAvg+'bd)':'City Average ('+pAvg+'bd)'}`
+  );
+  if (pd && permitMode!=='none') lines.push(`Complexity: ${pd.diff} | Lead Time: ${pd.lt}`);
+  if (permitMode==='waiver') lines.push(`Waiver Status: ${document.getElementById('waiverStatus').value}`);
+  lines.push('', '── PRODUCTION ──────────────────────',
+    `Scale: ${scale==='large'?'Large Scale (10–12 wk)':'Standard (6–8 wk)'}`
+  );
+  if (expedited) {
+    const approvalRef = document.getElementById('approvalGrantedText')?.textContent || 'Confirmed';
+    lines.push(`⚡ EXPEDITED — ${approvalRef}`);
+  }
+  // Key dates callout
+  const intakePhase = phases.find(p => p.id==='intake');
+  const transportPhase = phases.find(p => p.id==='transport');
+  lines.push('', '── KEY DATES ───────────────────────');
+  if (intakePhase) lines.push(`Deposit & Contract Due:  ${fd(intakePhase.end)}`);
+  const prepPhase = phases.find(p => p.id==='prep');
+  if (prepPhase) lines.push(`Permit/Waiver Submission: ${fd(prepPhase.end)}`);
+  if (transportPhase && transportPhase.days > 0) lines.push(`Transport / Crating:     ${fds(transportPhase.start)} → ${fds(transportPhase.end)} (${transportPhase.days}bd)`);
+  lines.push(`Projected Completion:    ${fd(projEnd)}`);
+  lines.push(`Client Target:           ${fd(endDate)}`);
+  return lines.join('\n');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════
+function exportPDF()    { window.print(); }
+function copyTimeline() {
+  if (!calcResult) { alert('Run a calculation first.'); return; }
+  navigator.clipboard.writeText(buildEmailBody()).then(() => alert('Copied!')).catch(() => alert('Copy failed.'));
+}
+function openEmailModal() {
+  if (!calcResult) { alert('Run a calculation first.'); return; }
+  document.getElementById('emailModal').classList.add('open');
+}
+function sendEmail() {
+  const to = document.getElementById('emailTo').value;
+  const subj = document.getElementById('emailSubject').value;
+  const body = document.getElementById('emailBody').value;
+  if (!to||!subj) { alert('Fill in To and Subject.'); return; }
+  window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+  showStatus('emailStatus','success','✓ Email client opened.');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id!=='configModal') showStatus(id==='emailModal'?'emailStatus':'handoffStatus','','');
+}
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'modal-status' + (type?' '+type:'');
+  el.textContent = msg;
+  el.style.display = type ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HANDOFF — via Make webhook
+// ═══════════════════════════════════════════════════════════════
+function openHandoffModal() {
+  if (!calcResult) { alert('Run a calculation first.'); return; }
+  selectedCRMItem = null;
+  document.getElementById('searchStep').style.display   = 'block';
+  document.getElementById('confirmStep').style.display  = 'none';
+  document.getElementById('handoffSubmitBtn').style.display = 'none';
+  document.getElementById('crmResults').innerHTML = '';
+  showStatus('handoffStatus','','');
+  document.getElementById('handoffModal').classList.add('open');
+}
+
+function setHandoffStage(s) {
+  handoffStage = s;
+  document.querySelectorAll('#stageToggle .tbtn').forEach((b,i) =>
+    b.classList.toggle('active', ['Sold','Drawing','keep'][i]===s));
+}
+
+async function searchCRM() {
+  const term = document.getElementById('crmSearchInput').value.trim();
+  if (!term) { alert('Enter a search term.'); return; }
+
+  const cfg = getConfig();
+  if (!cfg.CRM_SEARCH_WEBHOOK) {
+    document.getElementById('crmResults').innerHTML = `<div class="no-results">⚠️ CRM Search webhook not configured. Click "Configure Webhooks" in the header to add your Make webhook URL.</div>`;
+    return;
+  }
+
+  showStatus('handoffStatus','loading','🔍 Searching Sales CRM via Make...');
+  document.getElementById('crmResults').innerHTML = '<div class="no-results"><span class="spinner"></span> Searching...</div>';
+
+  try {
+    const res  = await fetch(cfg.CRM_SEARCH_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: term })
+    });
+    const data = await res.json();
+    showStatus('handoffStatus','','');
+
+    const results = data.results || [];
+    if (results.length === 0) {
+      document.getElementById('crmResults').innerHTML = `<div class="no-results">No projects found for "${term}". Try a different name or quote number.</div>`;
+    } else {
+      document.getElementById('crmResults').innerHTML = results.map(r => `
+        <div class="crm-result-item" id="crm_${r.id}" onclick='selectCRMItem(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
+          <div class="crm-result-name">${r.name}</div>
+          <div class="crm-result-meta">
+            ${r.quote?`Quote: <span class="hl">${r.quote}</span> &nbsp;·&nbsp; `:''}
+            Stage: <span class="${r.stage==='Sold'?'stage-sold':'stage-other'}">${r.stage||'—'}</span>
+            ${r.amount?` &nbsp;·&nbsp; $${parseFloat(r.amount).toLocaleString()}`:''}
+            ${r.address?` &nbsp;·&nbsp; ${r.address}`:''}
+          </div>
+        </div>`).join('');
+    }
+  } catch(e) {
+    showStatus('handoffStatus','error',`❌ Could not reach Make webhook. Check the URL in webhook configuration.\n\nError: ${e.message}`);
+    document.getElementById('crmResults').innerHTML = '';
+  }
+}
+
+function selectCRMItem(item) {
+  if (typeof item==='string') item = JSON.parse(item);
+  selectedCRMItem = item;
+  document.querySelectorAll('.crm-result-item').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('crm_'+item.id);
+  if (el) el.classList.add('selected');
+
+  document.getElementById('selectedItemName').textContent = item.name;
+  document.getElementById('selectedItemMeta').textContent =
+    `ID: ${item.id}${item.quote?' · Quote: '+item.quote:''}${item.stage?' · Stage: '+item.stage:''}`;
+
+  // Auto-fill client fields from CRM if not already filled
+  if (item.clientEmail && !document.getElementById('clientEmail').value)
+    document.getElementById('clientEmail').value = item.clientEmail;
+  if (item.clientName && !document.getElementById('clientName').value)
+    document.getElementById('clientName').value = item.clientName;
+
+  document.getElementById('kickoffMessage').value = buildKickoffMessage();
+  document.getElementById('confirmStep').style.display  = 'block';
+  document.getElementById('handoffSubmitBtn').style.display = 'inline-block';
+  showStatus('handoffStatus','','');
+}
+
+function backToSearch() {
+  selectedCRMItem = null;
+  document.getElementById('confirmStep').style.display  = 'none';
+  document.getElementById('handoffSubmitBtn').style.display = 'none';
+}
+
+async function submitHandoff() {
+  if (!selectedCRMItem) { alert('Select a project first.'); return; }
+
+  const cfg = getConfig();
+  if (!cfg.HANDOFF_WEBHOOK) {
+    showStatus('handoffStatus','error','⚠️ Handoff webhook not configured. Click "Configure Webhooks" in the header.');
+    return;
+  }
+
+  const kickoff  = document.getElementById('kickoffMessage').value;
+  const pmNote   = document.getElementById('pmComment').value;
+  const btn      = document.getElementById('handoffSubmitBtn');
+
+  showStatus('handoffStatus','loading','⏳ Sending handoff to Monday via Make...');
+  btn.disabled = true;
+
+  const payload = {
+    itemId:         parseInt(selectedCRMItem.id),
+    kickoffMessage: kickoff,
+    stage:          handoffStage,
+    pmComment:      `📋 SALES → PM HANDOFF\n\n${pmNote?pmNote+'\n\n':''}Full timeline written to Kickoff Message field.\nHandoff by: ${document.getElementById('salesRep').value||'Sales'} on ${new Date().toLocaleDateString('en-CA')}${expedited?'\n\n⚡ EXPEDITED — Sylvain approval confirmed':''}${permitMode==='waiver'?'\n🏳️ WAIVER/BANNER PATH — monitor approval status':''}`,
+    salesRep:       document.getElementById('salesRep').value || '',
+    projectName:    document.getElementById('projectName').value || '',
+  };
+
+  try {
+    const res  = await fetch(cfg.HANDOFF_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showStatus('handoffStatus','success',
+        `✅ Handoff complete!\n\n• Kickoff Message written to Sales CRM\n• Stage ${handoffStage!=='keep'?'moved to '+handoffStage:'kept as-is'}\n• PM comment posted on item\n\nProject: ${selectedCRMItem.name}\nItem ID: ${selectedCRMItem.id}`);
+      btn.textContent = '✓ Done';
+    } else {
+      showStatus('handoffStatus','error', `❌ Make returned an error:\n${JSON.stringify(data, null, 2)}`);
+      btn.disabled = false;
+    }
+  } catch(e) {
+    showStatus('handoffStatus','error', `❌ Failed to reach Make webhook.\n\nError: ${e.message}\n\nManual option — copy the Kickoff Message above and paste it into the Sales CRM item directly.`);
+    btn.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+updateConfigBanner();
+loadPermitData();
+</script>
+</body>
+</html>
