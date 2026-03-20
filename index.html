@@ -993,7 +993,7 @@ function setExpState(state) {
 // HMAC(secret, YYYY-MM-DD) → first 6 chars uppercase.
 // Sylvain's page derives the same code independently.
 // ═══════════════════════════════════════════════════════════════
-const APPROVAL_SECRET = 'AS-OPS-SC-2026'; // Change this to a private value known only to you
+const APPROVAL_SECRET = 'ASProd@Sylvain99'; // Change this to a private value known only to you
 
 async function deriveCode(secret, dateStr) {
   const encoder = new TextEncoder();
